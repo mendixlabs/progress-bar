@@ -1,0 +1,11 @@
+.widget-progressbar-text-contrast .progress-bar {
+    color: black;
+}
+
+.widget-progressbar {
+    width: 100%
+}
+
+.widget-progressbar-clickable:hover {
+    cursor: pointer;
+}

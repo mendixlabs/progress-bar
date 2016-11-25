@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget id="com.mendix.widget.ProgressBar.ProgressBar" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ widget.xsd">
+    <name>Progress Bar</name>
+    <description>The progress bar widget lets you display a percentage as a bar.</description>
+    <icon>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJ bWFnZVJlYWR5ccllPAAAAKdJREFUeNpi/P//PwMlgImBQjDwBrDw8fFF/vnzR44szSwsj1iUlZUl 161b10GOAUFBQcVMkpKSf1hZWRl27NgBxvjY6Bikl4WHh+c/Gxsbw4cPH8Cm4mOjA5BekAH/2NnZ Gd68eQMWxMfGYsA/Fi4uLrABb9++hSvExUYHIL0snJyc/0H+mTt3LlwCFxsdgPSyAE1+2tDQkEFO LAD1PmMczQsMAAEGACNuS4UbtbU3AAAAAElFTkSuQmCC
+    </icon>
+    <properties>
+        <property key="progressAttribute" type="attribute">
+            <caption>Progress attribute</caption>
+            <category>Data source</category>
+            <description>The attribute that contains the progress percentage from 0 to 100</description>
+            <attributeTypes>
+                <attributeType name="Integer" />
+                <attributeType name="Decimal" />
+            </attributeTypes>
+        </property>
+        <property key="bootstrapStyleAttribute" type="attribute" required="false">
+            <caption>Style attribute</caption>
+            <category>Data source</category>
+            <description>Value of attribute should be: info, warning, danger, success. Alternatively use the display 'Bar style' property</description>
+            <attributeTypes>
+                <attributeType name="Enum" />
+                <attributeType name="String" />
+            </attributeTypes>
+        </property>
+        <property key="description" type="translatableString" required="false">
+            <caption>Description</caption>
+            <category>Display</category>
+            <description>The text to display in the bar after the percentage value</description>
+        </property>
+        <property key="width" type="integer" defaultValue="0">
+            <caption>Width</caption>
+            <category>Display</category>
+            <description>The width in pixels of the widget. If 0 it will be 100%</description>
+        </property>
+        <property key="textColorSwitch" type="integer" defaultValue="50">
+            <caption>Colour switch value</caption>
+            <category>Display</category>
+            <description>The percentage at which the text gets a contrast colour (class) from black to white</description>
+        </property>
+        <property key="barType" type="enumeration" required="true" defaultValue="default">
+            <caption>Type</caption>
+            <category>Display</category>
+            <description>Render the type of progress bar: default, striped or animated </description>
+            <enumerationValues>
+                <enumerationValue key="default">Default</enumerationValue>
+                <enumerationValue key="striped">Striped</enumerationValue>
+                <enumerationValue key="animated">Animated</enumerationValue>
+            </enumerationValues>
+        </property>
+        <property key="onclickMicroflow" type="microflow" required="false">
+            <caption>Click microFlow</caption>
+            <category>Behaviour</category>
+            <description>When set the microflow will be called on click on the progress bar</description>
+            <returnType type="Void" />
+        </property>
+        <property key="classBar" type="enumeration" required="true" defaultValue="none">
+            <caption>Bar style</caption>
+            <category>Display</category>
+            <description>The color of the progress bar using bootstrap classes. Only used when 'Style attribute' is not set</description>
+            <enumerationValues>
+                <enumerationValue key="none">None</enumerationValue>
+                <enumerationValue key="success">Success</enumerationValue>
+                <enumerationValue key="info">Info</enumerationValue>
+                <enumerationValue key="warning">Warning</enumerationValue>
+                <enumerationValue key="danger">Danger</enumerationValue>
+            </enumerationValues>
+        </property>
+    </properties>
+</widget>
