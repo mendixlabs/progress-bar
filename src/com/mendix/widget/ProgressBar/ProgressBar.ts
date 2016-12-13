@@ -22,12 +22,14 @@ class ProgressBar extends WidgetBase {
         this.updateRendering();
     }
 
-    update(object: mendix.lib.MxObject, callback: Function) {
+    update(object: mendix.lib.MxObject, callback?: Function) {
         this.contextObject = object;
         this.resetSubscriptions();
         this.updateRendering();
 
-        callback();
+        if (callback) {
+            callback();
+        }
     }
 
     uninitialize(): boolean {
