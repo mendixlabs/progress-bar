@@ -9,10 +9,9 @@
         <property key="progressAttribute" type="attribute">
             <caption>Progress attribute</caption>
             <category>Data source</category>
-            <description>The attribute that contains the progress percentage from 0 to 100</description>
+            <description>Holds the progress value</description>
             <attributeTypes>
                 <attributeType name="Integer" />
-                <attributeType name="Decimal" />
             </attributeTypes>
         </property>
         <property key="bootstrapStyleAttribute" type="attribute" required="false">
@@ -23,11 +22,6 @@
                 <attributeType name="Enum" />
                 <attributeType name="String" />
             </attributeTypes>
-        </property>
-        <property key="description" type="translatableString" required="false">
-            <caption>Description</caption>
-            <category>Display</category>
-            <description>The text to display in the bar after the percentage value</description>
         </property>
         <property key="width" type="integer" defaultValue="0">
             <caption>Width</caption>

@@ -10,7 +10,6 @@ export interface MicroFlowProps {
 
 export interface ProgressBarProps {
     barType?: string;
-    label?: string;
     bootstrapStyle?: string;
     microflowProps?: MicroFlowProps;
     colorSwitch: number;
@@ -30,7 +29,7 @@ export const ProgressBar = (props: ProgressBarProps) =>
                 className: progressClasses(props.bootstrapStyle, props.barType),
                 style: { width: progressValue(props.percentage) + "%" }
             },
-            progressLabel(props.label, progressValue(props.percentage))
+            progressValue(props.percentage) + "% "
         )
     );
 
@@ -82,11 +81,4 @@ const executeMicroflow = (props: MicroFlowProps) => {
             }
         });
     }
-};
-
-const progressLabel = (label: string, value: number) => {
-    if (label) {
-        return progressValue(value) + "% " + label;
-    }
-    return "";
 };

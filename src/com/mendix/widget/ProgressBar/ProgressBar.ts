@@ -11,7 +11,6 @@ class ProgressBar extends WidgetBase {
     private bootstrapStyleAttribute: string;
     private classBar: string;
     private barType: string;
-    private description: string;
     private textColorSwitch: number;
     private width: number;
     private onclickMicroflow: string;
@@ -54,9 +53,6 @@ class ProgressBar extends WidgetBase {
             barType: this.barType,
             bootstrapStyle,
             colorSwitch: this.textColorSwitch,
-            label: this.contextObject
-                ? this.description
-                : "",
             microflowProps: this.createOnClickProps(),
             percentage,
             width: this.width

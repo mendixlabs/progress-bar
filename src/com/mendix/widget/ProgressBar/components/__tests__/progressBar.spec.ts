@@ -37,31 +37,31 @@ describe("Progress bar", () => {
 
 
     it("should render the progress label", () => {
-        const bar = renderProgressBar({ percentage, colorSwitch, label: "progress" });
+        const bar = renderProgressBar({ percentage, colorSwitch });
 
         expect(bar.text()).toEqual("23% progress");
     });
 
     it("should render the progress label 0% when percentage is negative", () => {
-        const bar = renderProgressBar({ colorSwitch, label: "progress", percentage: -10 }).childAt(0);
+        const bar = renderProgressBar({ colorSwitch, percentage: -10 }).childAt(0);
 
         expect(bar.text()).toEqual("0% progress");
     });
 
     it("should render the progress label 100% when percentage is over 100", () => {
-        const bar = renderProgressBar({ colorSwitch, label: "progress", percentage: 200 }).childAt(0);
+        const bar = renderProgressBar({ colorSwitch, percentage: 200 }).childAt(0);
 
         expect(bar.text()).toEqual("100% progress");
     });
 
     it("should render with the set width", () => {
-        const barWrapper = renderProgressBar({ colorSwitch, label: "progress", percentage: 200, width: 120 });
+        const barWrapper = renderProgressBar({ colorSwitch, percentage: 200, width: 120 });
 
         expect(barWrapper.prop("style").width).toBe(120);
     });
 
     it("should render without width if passed width is equal to zero", () => {
-        const barWrapper = renderProgressBar({ colorSwitch, label: "progress", percentage: 200, width: 0 });
+        const barWrapper = renderProgressBar({ colorSwitch, percentage: 200, width: 0 });
 
         expect(barWrapper.prop("style").width).toBe(null);
     });
