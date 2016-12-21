@@ -23,11 +23,6 @@
                 <attributeType name="String" />
             </attributeTypes>
         </property>
-        <property key="width" type="integer" defaultValue="0">
-            <caption>Width</caption>
-            <category>Display</category>
-            <description>The width in pixels of the widget. If 0 it will be 100%</description>
-        </property>
         <property key="textColorSwitch" type="integer" defaultValue="50">
             <caption>Colour switch value</caption>
             <category>Display</category>

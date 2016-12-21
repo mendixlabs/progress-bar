@@ -22,48 +22,37 @@ describe("Progress bar", () => {
     });
 
     it("has progress bar structure", () => {
-        const plainProgressBar = renderProgressBar({ colorSwitch: 0, percentage: 80, width: 0 });
+        const plainProgressBar = renderProgressBar({ colorSwitch: 0, percentage: 80 });
 
         expect(plainProgressBar).toBeElement(
             DOM.div({
-                    className: "widget-progressbar progress",
-                    onClick: jasmine.any(Function) as any,
-                    style: { width: null }
-                },
-                DOM.div({ className: "progress-bar", style: { width: jasmine.any(String) } })
+                className: "widget-progressbar progress",
+                onClick: jasmine.any(Function) as any,
+                style: { width: "100%" }
+            },
+                DOM.div({ className: "progress-bar", style: { width: jasmine.any(String) } },
+                    jasmine.any(String) as any
+                )
             )
         );
     });
 
-
     it("should render the progress label", () => {
         const bar = renderProgressBar({ percentage, colorSwitch });
 
-        expect(bar.text()).toEqual("23% progress");
+        expect(bar.text()).toEqual("23%");
     });
 
     it("should render the progress label 0% when percentage is negative", () => {
         const bar = renderProgressBar({ colorSwitch, percentage: -10 }).childAt(0);
 
-        expect(bar.text()).toEqual("0% progress");
+        expect(bar.text()).toEqual("0%");
     });
 
     it("should render the progress label 100% when percentage is over 100", () => {
         const bar = renderProgressBar({ colorSwitch, percentage: 200 }).childAt(0);
 
-        expect(bar.text()).toEqual("100% progress");
-    });
-
-    it("should render with the set width", () => {
-        const barWrapper = renderProgressBar({ colorSwitch, percentage: 200, width: 120 });
-
-        expect(barWrapper.prop("style").width).toBe(120);
-    });
-
-    it("should render without width if passed width is equal to zero", () => {
-        const barWrapper = renderProgressBar({ colorSwitch, percentage: 200, width: 0 });
-
-        expect(barWrapper.prop("style").width).toBe(null);
+        expect(bar.text()).toEqual("100%");
     });
 
     describe("label color", () => {
@@ -148,7 +137,7 @@ describe("Progress bar", () => {
 
     it("should respond to click event", () => {
         spyOn(window.mx.data, "action").and.callThrough();
-        const validMicroflow: MicroFlowProps = { name: "m", guid: "2" };
+        const validMicroflow: MicroFlowProps = { guid: "2", name: "m" };
         const barWrapper: any = renderProgressBar({ percentage, colorSwitch, microflowProps: validMicroflow });
 
         barWrapper.props().onClick();
@@ -163,7 +152,7 @@ describe("Progress bar", () => {
 
     it("should not run onclick event if action name is empty", () => {
         spyOn(window.mx.data, "action").and.callThrough();
-        const emptyMicroflow: MicroFlowProps = { name: "", guid: "3" };
+        const emptyMicroflow: MicroFlowProps = { guid: "3", name: "" };
         const barWrapper: any = renderProgressBar({ percentage, colorSwitch, microflowProps: emptyMicroflow });
 
         barWrapper.props().onClick();
@@ -174,7 +163,7 @@ describe("Progress bar", () => {
     it("should show error to click event", () => {
         spyOn(window.mx.data, "action").and.callThrough();
         spyOn(window.mx.ui, "error").and.callThrough();
-        const errorMicroflow: MicroFlowProps = { name: "error_microflow", guid: "4" };
+        const errorMicroflow: MicroFlowProps = { guid: "4", name: "error_microflow" };
         const barWrapper: any = renderProgressBar({ percentage, colorSwitch, microflowProps: errorMicroflow });
 
         barWrapper.props().onClick();

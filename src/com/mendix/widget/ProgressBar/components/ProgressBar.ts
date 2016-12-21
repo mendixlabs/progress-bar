@@ -14,7 +14,6 @@ export interface ProgressBarProps {
     microflowProps?: MicroFlowProps;
     colorSwitch: number;
     percentage: number;
-    width?: number;
 }
 
 export const ProgressBar = (props: ProgressBarProps) =>
@@ -22,14 +21,14 @@ export const ProgressBar = (props: ProgressBarProps) =>
         {
             className: widgetClasses(props.percentage, props.colorSwitch, props.microflowProps),
             onClick: () => executeMicroflow(props.microflowProps),
-            style: { width: props.width !== 0 ? props.width : null }
+            style: { width: "100%" }
         },
         DOM.div(
             {
                 className: progressClasses(props.bootstrapStyle, props.barType),
                 style: { width: progressValue(props.percentage) + "%" }
             },
-            progressValue(props.percentage) + "% "
+            progressValue(props.percentage) + "%"
         )
     );
 

@@ -12,7 +12,6 @@ class ProgressBar extends WidgetBase {
     private classBar: string;
     private barType: string;
     private textColorSwitch: number;
-    private width: number;
     private onclickMicroflow: string;
     // Internal variables
     private contextObject: mendix.lib.MxObject;
@@ -54,8 +53,7 @@ class ProgressBar extends WidgetBase {
             bootstrapStyle,
             colorSwitch: this.textColorSwitch,
             microflowProps: this.createOnClickProps(),
-            percentage,
-            width: this.width
+            percentage
         };
     }
 
