@@ -3,12 +3,13 @@ import { DOM, createElement } from "react";
 
 import { MicroFlowProps, ProgressBar, ProgressBarProps } from "../ProgressBar";
 
-import { MxDataMock, MxLogger, MxMock, MxUiMock } from "../../../../../../../tests/mocks/Mendix";
+import { MxLogger, MxMock, MxUiMock } from "tests/mocks/Mendix";
 
 describe("Progress bar", () => {
     const renderProgressBar = (props: ProgressBarProps) => shallow(createElement(ProgressBar, props));
     const colorSwitch = 50;
     const percentage = 23;
+    const maximumValue = 100;
     const progressBarWrapper = renderProgressBar({ colorSwitch, percentage });
     const progressBar = progressBarWrapper.childAt(0);
     let mxOriginal: mx.mx;
@@ -18,7 +19,6 @@ describe("Progress bar", () => {
         window.logger = MxLogger.prototype;
         window.mx = MxMock.prototype;
         window.mx.ui = MxUiMock.prototype;
-        window.mx.data = MxDataMock.prototype;
     });
 
     it("has progress bar structure", () => {
@@ -37,22 +37,34 @@ describe("Progress bar", () => {
         );
     });
 
-    it("should render the progress label", () => {
-        const bar = renderProgressBar({ percentage, colorSwitch });
+    it("should render the progress", () => {
+        const bar = renderProgressBar({ percentage, colorSwitch, maximumValue });
 
         expect(bar.text()).toEqual("23%");
     });
 
-    it("should render the progress label 0% when percentage is negative", () => {
-        const bar = renderProgressBar({ colorSwitch, percentage: -10 }).childAt(0);
+    it("should render the progress when percentage is negative", () => {
+        const bar = renderProgressBar({ colorSwitch, percentage: -10, maximumValue}).childAt(0);
 
-        expect(bar.text()).toEqual("0%");
+        expect(bar.text()).toEqual("-10%");
     });
 
-    it("should render the progress label 100% when percentage is over 100", () => {
-        const bar = renderProgressBar({ colorSwitch, percentage: 200 }).childAt(0);
+    it("should render the progress label 200% when percentage is 200", () => {
+        const bar = renderProgressBar({ colorSwitch, percentage: 200, maximumValue }).childAt(0);
 
-        expect(bar.text()).toEqual("100%");
+        expect(bar.text()).toEqual("200%");
+    });
+
+    it("should render the progress label invalid when maximum value is less than 1", () => {
+        const bar = renderProgressBar({ colorSwitch, maximumValue: 0, percentage: 200 }).childAt(0);
+
+        expect(bar.text()).toEqual("Invalid");
+    });
+
+    it("should render the progress label with empty when percentage is undefined", () => {
+        const bar = renderProgressBar({ colorSwitch, percentage: undefined, maximumValue }).childAt(0);
+
+        expect(bar.text()).toEqual("");
     });
 
     describe("label color", () => {
@@ -136,42 +148,51 @@ describe("Progress bar", () => {
     });
 
     it("should respond to click event", () => {
-        spyOn(window.mx.data, "action").and.callThrough();
+        spyOn(window.mx.ui, "action").and.callThrough();
         const validMicroflow: MicroFlowProps = { guid: "2", name: "m" };
         const barWrapper: any = renderProgressBar({ percentage, colorSwitch, microflowProps: validMicroflow });
 
         barWrapper.props().onClick();
 
-        expect(window.mx.data.action).toHaveBeenCalled();
-        expect(window.mx.data.action).toHaveBeenCalledWith({ error: jasmine.any(Function), origin: undefined, params: {
-            actionname: validMicroflow.name,
-            applyto: "selection",
-            guids: [ validMicroflow.guid ]
-        } });
+        expect(window.mx.ui.action).toHaveBeenCalled();
+        expect(window.mx.ui.action).toHaveBeenCalledWith(validMicroflow.name, {
+            error: jasmine.any(Function),
+            params: {
+                applyto: "selection",
+                guids: [ validMicroflow.guid ]
+            }
+        });
     });
 
     it("should not run onclick event if action name is empty", () => {
-        spyOn(window.mx.data, "action").and.callThrough();
+        spyOn(window.mx.ui, "action").and.callThrough();
         const emptyMicroflow: MicroFlowProps = { guid: "3", name: "" };
         const barWrapper: any = renderProgressBar({ percentage, colorSwitch, microflowProps: emptyMicroflow });
 
         barWrapper.props().onClick();
 
-        expect(window.mx.data.action).not.toHaveBeenCalled();
+        expect(window.mx.ui.action).not.toHaveBeenCalled();
     });
 
-    it("should show error to click event", () => {
-        spyOn(window.mx.data, "action").and.callThrough();
+    it("shows an error when an invalid onClick microflow is set", () => {
+        const invalidAction = "invalid_action";
+        const errorMessage = "Error while executing microflow: invalid_action: mx.ui.action error mock";
+        const onclickProps: MicroFlowProps = {
+            guid: "4",
+            name: "invalid_action"
+        };
+
+        spyOn(window.mx.ui, "action").and.callFake((actionname: string, action: { error: (e: Error) => void }) => {
+            if (actionname === invalidAction) {
+                action.error(new Error("mx.ui.action error mock"));
+            }
+        });
         spyOn(window.mx.ui, "error").and.callThrough();
-        const errorMicroflow: MicroFlowProps = { guid: "4", name: "error_microflow" };
-        const barWrapper: any = renderProgressBar({ percentage, colorSwitch, microflowProps: errorMicroflow });
 
-        barWrapper.props().onClick();
+        const barWrapper: any = renderProgressBar({ percentage, colorSwitch, microflowProps: onclickProps });
+        barWrapper.simulate("click");
 
-        expect(window.mx.data.action).toHaveBeenCalled();
-        expect(window.mx.ui.error).toHaveBeenCalledWith(
-            "Error while executing microflow: error_microflow: Mock some error that is thrown in the Mendix runtime"
-        );
+        expect(window.mx.ui.error).toHaveBeenCalledWith(errorMessage);
     });
 
     afterAll(() => {
