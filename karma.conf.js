@@ -15,8 +15,8 @@ module.exports = function(config) {
         basePath: "",
         frameworks: [ "jasmine" ],
         files: [
-            { pattern: "src/**/*.ts", watched: false, included: false, served: false },
-            { pattern: "tests/**/*.ts", watched: false, included: false, served: false },
+            { pattern: "src/**/*.ts" },
+            { pattern: "tests/**/*.ts" },
             "tests/test-index.js"
         ],
         exclude: [],

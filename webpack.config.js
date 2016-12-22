@@ -11,8 +11,11 @@ module.exports = {
         umdNamedDefine: true,
         library: "com.mendix.widget.ProgressBar.ProgressBar"
     },
-      resolve: {
+    resolve: {
         extensions: [ "", ".ts", ".js", ".json" ],
+        alias: {
+            "tests": path.resolve(__dirname, "./tests")
+        }
     },
     errorDetails: true,
     module: {
