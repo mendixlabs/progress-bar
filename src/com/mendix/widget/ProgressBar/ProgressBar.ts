@@ -7,12 +7,13 @@ import { MicroFlowProps, ProgressBar as ProgressBarComponent, ProgressBarProps }
 
 class ProgressBar extends WidgetBase {
     // Parameters configured from modeler
-    private progressAttribute: string;
-    private bootstrapStyleAttribute: string;
-    private classBar: string;
-    private barType: string;
-    private textColorSwitch: number;
-    private onclickMicroflow: string;
+    progressAttribute: string;
+    bootstrapStyleAttribute: string;
+    classBar: string;
+    barType: string;
+    textColorSwitch: number;
+    maximumValueAttribute: string;
+    onclickMicroflow: string;
     // Internal variables
     private contextObject: mendix.lib.MxObject;
 
@@ -47,11 +48,15 @@ class ProgressBar extends WidgetBase {
         const bootstrapStyle = this.contextObject && this.bootstrapStyleAttribute
             ? (this.contextObject.get(this.bootstrapStyleAttribute))as string
             : this.classBar !== "none" ? this.classBar : "";
+        const maximumValue = this.contextObject && this.maximumValueAttribute
+            ? Number(this.contextObject.get(this.maximumValueAttribute))
+            : undefined;
 
         return {
             barType: this.barType,
             bootstrapStyle,
             colorSwitch: this.textColorSwitch,
+            maximumValue,
             microflowProps: this.createOnClickProps(),
             percentage
         };
@@ -60,8 +65,7 @@ class ProgressBar extends WidgetBase {
     private createOnClickProps(): MicroFlowProps {
         return ({
             guid: this.contextObject ? this.contextObject.getGuid() : undefined,
-            name: this.onclickMicroflow,
-            origin: this.mxform
+            name: this.onclickMicroflow
         });
     }
 
@@ -82,12 +86,15 @@ class ProgressBar extends WidgetBase {
                 callback: (guid, attr, attrValue) => this.updateRendering(),
                 guid: this.contextObject.getGuid()
             });
+            this.subscribe({
+                attr: this.maximumValueAttribute,
+                callback: () => this.updateRendering(),
+                guid: this.contextObject.getGuid()
+            });
         }
     }
 }
 
-// Declare widget prototype the Dojo way
-// Thanks to https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/dojo/README.md
 // tslint:disable : only-arrow-functions
 dojoDeclare("com.mendix.widget.ProgressBar.ProgressBar", [ WidgetBase ],
     (function (Source: any) {

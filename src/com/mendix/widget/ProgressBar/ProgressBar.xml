@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <widget id="com.mendix.widget.ProgressBar.ProgressBar" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ widget.xsd">
     <name>Progress Bar</name>
-    <description>The progress bar widget lets you display a percentage as a bar.</description>
+    <description>The widget lets you display a percentage as a bar</description>
     <icon>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJ bWFnZVJlYWR5ccllPAAAAKdJREFUeNpi/P//PwMlgImBQjDwBrDw8fFF/vnzR44szSwsj1iUlZUl 161b10GOAUFBQcVMkpKSf1hZWRl27NgBxvjY6Bikl4WHh+c/Gxsbw4cPH8Cm4mOjA5BekAH/2NnZ Gd68eQMWxMfGYsA/Fi4uLrABb9++hSvExUYHIL0snJyc/0H+mTt3LlwCFxsdgPSyAE1+2tDQkEFO LAD1PmMczQsMAAEGACNuS4UbtbU3AAAAAElFTkSuQmCC
     </icon>
@@ -10,6 +10,14 @@
             <caption>Progress attribute</caption>
             <category>Data source</category>
             <description>Holds the progress value</description>
+            <attributeTypes>
+                <attributeType name="Integer" />
+            </attributeTypes>
+        </property>
+        <property key="maximumValueAttribute" type="attribute" required="false">
+            <caption>Maximum value attribute</caption>
+            <category>Data source</category>
+            <description>Highest progress value. If not set, maximum value defaults to 100</description>
             <attributeTypes>
                 <attributeType name="Integer" />
             </attributeTypes>

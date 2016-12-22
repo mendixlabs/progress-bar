@@ -5,12 +5,12 @@ import * as classNames from "classnames";
 export interface MicroFlowProps {
     name: string;
     guid: string;
-    origin?: mxui.lib.form._FormBase;
 }
 
 export interface ProgressBarProps {
     barType?: string;
     bootstrapStyle?: string;
+    maximumValue?: number;
     microflowProps?: MicroFlowProps;
     colorSwitch: number;
     percentage: number;
@@ -19,62 +19,68 @@ export interface ProgressBarProps {
 export const ProgressBar = (props: ProgressBarProps) =>
     DOM.div(
         {
-            className: widgetClasses(props.percentage, props.colorSwitch, props.microflowProps),
+            className: widgetClasses(props.percentage, props.colorSwitch, props.microflowProps, props.maximumValue),
             onClick: () => executeMicroflow(props.microflowProps),
             style: { width: "100%" }
         },
         DOM.div(
             {
-                className: progressClasses(props.bootstrapStyle, props.barType),
-                style: { width: progressValue(props.percentage) + "%" }
+                className: progressClasses(props.bootstrapStyle, props.barType, props.percentage),
+                style: { width: Math.abs(progressValue(props.percentage, props.maximumValue)) + "%" }
             },
-            progressValue(props.percentage) + "%"
+            props.percentage
+                ? props.maximumValue < 1 ? "Invalid" : roundValue(props.percentage, props.maximumValue) + "%"
+                : ""
         )
     );
 
-const widgetClasses = (percentage: number, colorSwitch: number, microflow: MicroFlowProps) =>
+const widgetClasses = (percentage: number, colorSwitch: number, microflow: MicroFlowProps, maximumValue: number) =>
     classNames(
         "progress",
         "widget-progressbar", {
-            "widget-progressbar-text-contrast": progressValue(percentage) < colorSwitch,
+            "red-progressbar-text": maximumValue < 1,
+            "widget-progressbar-text-contrast": progressValue(percentage, maximumValue) < colorSwitch,
             "widget-progressbar-clickable": microflow && microflow.name !== ""
         }
     );
 
-const progressClasses = (bootstrapStyle: string, barType: string) =>
+const progressClasses = (bootstrapStyle: string, barType: string, percentage: number) =>
     classNames("progress-bar", {
         "progress-bar-info": bootstrapStyle === "info",
         "progress-bar-danger": bootstrapStyle === "danger",
         "progress-bar-warning": bootstrapStyle === "warning",
         "progress-bar-success": bootstrapStyle === "success",
         "progress-bar-striped": barType === "striped",
-        "progress-bar-striped active": barType === "animated"
+        "progress-bar-striped active": barType === "animated",
+        "widget-progressbar-negative": percentage < 0
     });
 
-const progressValue = (progressAttributeValue: number) => {
-    const maximumValue = 100;
-    const minimumValue = 0;
+const progressValue = (progressAttributeValue: number, maximumValue: number) => {
+    const maxValue = typeof maximumValue === "undefined" ? 100 : maximumValue;
 
-    if (progressAttributeValue > maximumValue) {
-        window.logger.warn("Progress value passed to progress bar exceeds 100%");
-        return maximumValue;
-    } else if (!progressAttributeValue || progressAttributeValue < minimumValue) {
-        window.logger.warn("Progress value passed to progress bar is below 0%");
-        return minimumValue;
+    if (!progressAttributeValue || typeof progressAttributeValue === "undefined") {
+        return 0;
+    } else if (maxValue < 1) {
+        window.logger.warn("The maximum value is less than one. Progress is set to Invalid");
+        return 0;
+    } else if (progressAttributeValue > maxValue || Math.abs(roundValue(progressAttributeValue, maxValue)) > 100) {
+        return 100;
+    } else {
+        return roundValue(progressAttributeValue, maxValue);
     }
+};
 
-    return progressAttributeValue;
+const roundValue = (progress: number, maxValue: number) => {
+    return Math.round((progress / maxValue) * 100);
 };
 
 const executeMicroflow = (props: MicroFlowProps) => {
     if (props && props.name && props.guid) {
-        window.mx.data.action({
+        window.mx.ui.action(props.name, {
             error: (error: Error) => {
                 window.mx.ui.error(`Error while executing microflow: ${props.name}: ${error.message}`);
             },
-            origin: props.origin || undefined,
             params: {
-                actionname : props.name,
                 applyto: "selection",
                 guids: [ props.guid ]
             }
