@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget id="com.mendix.widget.ProgressBar.ProgressBar" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ widget.xsd">
+<widget id="com.mendix.widget.ProgressBar.ProgressBar" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../../../../../xsd/widget.xsd">
     <name>Progress Bar</name>
     <description>The widget lets you display a percentage as a bar</description>
     <icon>
@@ -49,15 +49,15 @@
         <property key="onclickMicroflow" type="microflow" required="false">
             <caption>Click microFlow</caption>
             <category>Behaviour</category>
-            <description>When set the microflow will be called on click on the progress bar</description>
+            <description>Microflow to call when the progress bar is clicked</description>
             <returnType type="Void" />
         </property>
-        <property key="classBar" type="enumeration" required="true" defaultValue="none">
-            <caption>Bar style</caption>
+        <property key="progressStyle" type="enumeration" required="true" defaultValue="default">
+            <caption>Progress style</caption>
             <category>Display</category>
             <description>The color of the progress bar using bootstrap classes. Only used when 'Style attribute' is not set</description>
             <enumerationValues>
-                <enumerationValue key="none">None</enumerationValue>
+                <enumerationValue key="default">Default (None)</enumerationValue>
                 <enumerationValue key="success">Success</enumerationValue>
                 <enumerationValue key="info">Info</enumerationValue>
                 <enumerationValue key="warning">Warning</enumerationValue>

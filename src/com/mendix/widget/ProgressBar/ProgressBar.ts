@@ -3,23 +3,24 @@ import * as WidgetBase from "mxui/widget/_WidgetBase";
 import { createElement } from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 
-import { MicroFlowProps, ProgressBar as ProgressBarComponent, ProgressBarProps } from "./components/ProgressBar";
+import {
+    BarType,
+    BootstrapStyle,
+    ProgressBar as ProgressBarComponent,
+    ProgressBarProps
+} from "./components/ProgressBar";
 
 class ProgressBar extends WidgetBase {
     // Parameters configured from modeler
     progressAttribute: string;
     bootstrapStyleAttribute: string;
-    classBar: string;
-    barType: string;
+    progressStyle: BootstrapStyle;
+    barType: BarType;
     textColorSwitch: number;
     maximumValueAttribute: string;
     onclickMicroflow: string;
     // Internal variables
     private contextObject: mendix.lib.MxObject;
-
-    postCreate() {
-        this.updateRendering();
-    }
 
     update(object: mendix.lib.MxObject, callback?: Function) {
         this.contextObject = object;
@@ -42,62 +43,48 @@ class ProgressBar extends WidgetBase {
     }
 
     private getProgressBarProps(): ProgressBarProps {
-        const percentage = this.contextObject
-            ? Math.round(parseInt(this.contextObject.get(this.progressAttribute)as string, 10))
-            : 0;
-        const bootstrapStyle = this.contextObject && this.bootstrapStyleAttribute
-            ? (this.contextObject.get(this.bootstrapStyleAttribute))as string
-            : this.classBar !== "none" ? this.classBar : "";
-        const maximumValue = this.contextObject && this.maximumValueAttribute
-            ? Number(this.contextObject.get(this.maximumValueAttribute))
-            : undefined;
+        const { bootstrapStyleAttribute, contextObject, maximumValueAttribute, progressAttribute } = this;
+        let progress = 0;
+        let bootstrapStyle = this.progressStyle;
+        let maximumValue = 100;
+        if (this.contextObject) {
+            progress = Math.round(parseInt(contextObject.get(progressAttribute) as string, 10));
+            bootstrapStyle = contextObject.get(bootstrapStyleAttribute || "") as BootstrapStyle || bootstrapStyle;
+            maximumValue = maximumValueAttribute ? Number(contextObject.get(maximumValueAttribute)) : maximumValue;
+        }
 
         return {
             barType: this.barType,
             bootstrapStyle,
             colorSwitch: this.textColorSwitch,
+            contextObjectGuid: this.contextObject ? this.contextObject.getGuid() : undefined,
             maximumValue,
-            microflowProps: this.createOnClickProps(),
-            percentage
+            onClickMicroflow: this.onclickMicroflow,
+            progress
         };
-    }
-
-    private createOnClickProps(): MicroFlowProps {
-        return ({
-            guid: this.contextObject ? this.contextObject.getGuid() : undefined,
-            name: this.onclickMicroflow
-        });
     }
 
     private resetSubscriptions() {
         this.unsubscribeAll();
         if (this.contextObject) {
             this.subscribe({
-                callback: (guid) => this.updateRendering(),
-                guid: this.contextObject.getGuid()
-            });
-            this.subscribe({
-                attr: this.progressAttribute,
-                callback: (guid, attr, attrValue) => this.updateRendering(),
-                guid: this.contextObject.getGuid()
-            });
-            this.subscribe({
-                attr: this.bootstrapStyleAttribute,
-                callback: (guid, attr, attrValue) => this.updateRendering(),
-                guid: this.contextObject.getGuid()
-            });
-            this.subscribe({
-                attr: this.maximumValueAttribute,
                 callback: () => this.updateRendering(),
                 guid: this.contextObject.getGuid()
             });
+
+            [ this.progressAttribute, this.bootstrapStyleAttribute, this.maximumValueAttribute ].forEach((attribute) =>
+                this.subscribe({
+                    attr: attribute,
+                    callback: () => this.updateRendering(),
+                    guid: this.contextObject.getGuid()
+                })
+            );
         }
     }
 }
 
 // tslint:disable : only-arrow-functions
-dojoDeclare("com.mendix.widget.ProgressBar.ProgressBar", [ WidgetBase ],
-    (function (Source: any) {
+dojoDeclare("com.mendix.widget.ProgressBar.ProgressBar", [ WidgetBase ], function (Source: any) {
         let result: any = {};
         for (let i in Source.prototype) {
             if (i !== "constructor" && Source.prototype.hasOwnProperty(i)) {
@@ -105,5 +92,5 @@ dojoDeclare("com.mendix.widget.ProgressBar.ProgressBar", [ WidgetBase ],
             }
         }
         return result;
-    }(ProgressBar))
+    }(ProgressBar)
 );
