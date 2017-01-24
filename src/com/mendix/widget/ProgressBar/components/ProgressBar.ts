@@ -20,6 +20,7 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
         barType: "default",
         bootstrapStyle: "default",
         colorSwitch: 50,
+        maximumValue: 100,
         progress: 0
     };
 
@@ -51,7 +52,7 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
         );
     }
 
-    private progressValue(progress: number, maximumValue: number) {
+    private progressValue(progress: number, maximumValue: number | undefined) {
         const maxValue = typeof maximumValue === "undefined" ? 100 : maximumValue;
 
         if (typeof progress !== "number") {
@@ -66,11 +67,11 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
         return this.calculatePercentage(progress, maxValue);
     }
 
-    private calculatePercentage(progress: number, maxValue: number) {
+    private calculatePercentage(progress: number, maxValue: number | undefined = 100) {
         return Math.round((progress / maxValue) * 100);
     }
 
-    private executeMicroflow (action: string, guid: string) {
+    private executeMicroflow (action: string | undefined, guid: string | undefined) {
         if (action && guid) {
             window.mx.ui.action(action, {
                 error: (error: Error) => {
