@@ -16,19 +16,12 @@ module.exports = {
             "tests": path.resolve(__dirname, "./tests")
         }
     },
-    errorDetails: true,
     module: {
         loaders: [
             { test: /\.ts$/, loader: "ts-loader" },
             { test: /\.json$/, loader: "json" },
             { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader") }
-        ],
-        postLoaders: [ {
-             test: /\.ts$/,
-             loader: "istanbul-instrumenter",
-             include: path.resolve(__dirname, "src"),
-             exclude: /\.(spec)\.ts$/
-         } ]
+        ]
     },
     devtool: "source-map",
     externals: [ "mxui/widget/_WidgetBase", "mendix/lang", "dojo/_base/declare" ],

@@ -2,19 +2,25 @@ import { Component, DOM, createElement } from "react";
 import * as classNames from "classnames";
 
 import { Alert } from "./Alert";
+import "../ui/ProgressBar.css";
 
 interface ProgressBarProps {
     barType?: BarType;
     bootstrapStyle?: BootstrapStyle;
     colorSwitch?: number;
-    contextObjectGuid?: string;
+    contextObject?: mendix.lib.MxObject;
     maximumValue: number;
     onClickMicroflow?: string;
+    onClickOption?: OnClickOptions;
+    onClickPage?: string;
+    pageLocation?: PageLocation;
     progress: number | null;
 }
 
 type BootstrapStyle = "default" | "info" | "primary" | "success" | "warning" | "danger";
 type BarType = "default" | "striped" | "animated";
+export type OnClickOptions = "doNothing" | "showPage" | "callMicroflow";
+export type PageLocation = "content" | "popup" | "modal";
 
 class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> {
     static defaultProps: ProgressBarProps = {
@@ -22,6 +28,7 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> 
         bootstrapStyle: "default",
         colorSwitch: 50,
         maximumValue: 100,
+        onClickOption: "doNothing",
         progress: 0
     };
 
@@ -38,11 +45,11 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> 
             DOM.div(
                 {
                     className: classNames("progress", {
-                        "red-progressbar-text": maximumValue < 1,
+                        "widget-progressbar-alert": maximumValue < 1,
                         "widget-progressbar-clickable": !!onClickMicroflow,
                         "widget-progressbar-text-contrast": percentage < colorSwitch
                     }),
-                    onClick: () => this.executeMicroflow(onClickMicroflow, this.props.contextObjectGuid)
+                    onClick: () => this.handleClick()
                 },
                 DOM.div(
                     {
@@ -53,9 +60,7 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> 
                         }),
                         style: { width: `${Math.abs(percentage)}%` }
                     },
-                    progress
-                        ? maximumValue < 1 ? "Invalid" : `${this.calculatePercentage(progress, maximumValue)}%`
-                        : ""
+                    this.getProgressText(progress, maximumValue)
                 )
             ),
             this.state.alertMessage ? createElement(Alert, { message: this.state.alertMessage }) : null
@@ -63,10 +68,7 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> 
     }
 
     private progressValue(progress: number | null, maximumValue: number) {
-        if (typeof progress !== "number") {
-            return 0;
-        } else if (maximumValue < 1) {
-            window.console.warn("The maximum value is less than one. Progress is set to Invalid");
+        if (typeof progress !== "number" || maximumValue < 1) {
             return 0;
         } else if (progress > maximumValue || Math.abs(this.calculatePercentage(progress, maximumValue)) > 100) {
             return 100;
@@ -79,16 +81,39 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> 
         return Math.round((progress / maxValue) * 100);
     }
 
-    private executeMicroflow (action: string | undefined, guid: string | undefined) {
-        if (action && guid) {
-            window.mx.ui.action(action, {
-                error: (error: Error) => {
-                    this.setState({ alertMessage: `Error while executing microflow: ${action}: ${error.message}` });
-                },
+    private getProgressText(progress: number | null, maximumValue: number): string {
+        if (progress) {
+            return maximumValue < 1
+                ? "Invalid"
+                : `${this.calculatePercentage(progress, maximumValue)}%`;
+        }
+
+        return "";
+    }
+
+    private handleClick () {
+        const { contextObject, onClickMicroflow, onClickOption, onClickPage, pageLocation } = this.props;
+        if (contextObject && onClickOption === "callMicroflow" && onClickMicroflow && contextObject.getGuid()) {
+            window.mx.ui.action(onClickMicroflow, {
+                error: (error) =>
+                    this.setState({
+                        alertMessage: `Error while executing microflow ${onClickMicroflow}: ${error.message}`
+                    }),
                 params: {
                     applyto: "selection",
-                    guids: [ guid ]
+                    guids: [ contextObject.getGuid() ]
                 }
+            });
+        } else if (contextObject && onClickOption === "showPage" && onClickPage && contextObject.getGuid()) {
+            const context = new window.mendix.lib.MxContext();
+            context.setTrackId(contextObject.getGuid());
+            context.setTrackEntity(contextObject.getEntity());
+
+            window.mx.ui.openForm(onClickPage, {
+                error: (error) =>
+                    this.setState({ alertMessage: `Error while opening page ${onClickPage}: ${error.message}` }),
+                context,
+                location: pageLocation
             });
         }
     }

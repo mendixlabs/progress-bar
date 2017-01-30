@@ -12,6 +12,8 @@
             <description>Holds the progress value</description>
             <attributeTypes>
                 <attributeType name="Integer" />
+                <attributeType name="Long" />
+                <attributeType name="Decimal" />
             </attributeTypes>
         </property>
         <property key="maximumValueAttribute" type="attribute" required="false">
@@ -20,6 +22,8 @@
             <description>Highest progress value. If not set, maximum value defaults to 100</description>
             <attributeTypes>
                 <attributeType name="Integer" />
+                <attributeType name="Long" />
+                <attributeType name="Decimal" />
             </attributeTypes>
         </property>
         <property key="bootstrapStyleAttribute" type="attribute" required="false">
@@ -41,23 +45,48 @@
             <category>Display</category>
             <description>Render the type of progress bar: default, striped or animated </description>
             <enumerationValues>
-                <enumerationValue key="default">Default</enumerationValue>
+                <enumerationValue key="default">Plain</enumerationValue>
                 <enumerationValue key="striped">Striped</enumerationValue>
                 <enumerationValue key="animated">Animated</enumerationValue>
             </enumerationValues>
         </property>
-        <property key="onclickMicroflow" type="microflow" required="false">
-            <caption>Click microFlow</caption>
+        <property key="onClickOption" type="enumeration" required="true" defaultValue="doNothing">
+            <caption>On click option</caption>
             <category>Behaviour</category>
-            <description>Microflow to call when the progress bar is clicked</description>
+            <description/>
+            <enumerationValues>
+                <enumerationValue key="doNothing">Do nothing</enumerationValue>
+                <enumerationValue key="showPage">Show a page</enumerationValue>
+                <enumerationValue key="callMicroflow">Call a microflow</enumerationValue>
+            </enumerationValues>
+        </property>
+        <property key="onClickMicroflow" type="microflow" required="false">
+            <caption>MicroFlow</caption>
+            <category>Behaviour</category>
+            <description>Microflow to execute when the progress bar is clicked</description>
             <returnType type="Void" />
+        </property>
+        <property key="onClickPage" type="form" required="false">
+            <caption>Page</caption>
+            <category>Behaviour</category>
+            <description>The page to open when the progress bar is clicked</description>
+        </property>
+        <property key="pageLocation" type="enumeration" required="true" defaultValue="popup">
+            <caption>Page location</caption>
+            <category>Behaviour</category>
+            <description/>
+            <enumerationValues>
+                <enumerationValue key="content">In content</enumerationValue>
+                <enumerationValue key="popup">Pop-up</enumerationValue>
+                <enumerationValue key="modal">Blocking pop-up</enumerationValue>
+            </enumerationValues>
         </property>
         <property key="progressStyle" type="enumeration" required="true" defaultValue="default">
             <caption>Progress style</caption>
             <category>Display</category>
             <description>The color of the progress bar using bootstrap classes. Only used when 'Style attribute' is not set</description>
             <enumerationValues>
-                <enumerationValue key="default">Default (None)</enumerationValue>
+                <enumerationValue key="default">None</enumerationValue>
                 <enumerationValue key="success">Success</enumerationValue>
                 <enumerationValue key="info">Info</enumerationValue>
                 <enumerationValue key="warning">Warning</enumerationValue>

@@ -15,6 +15,6 @@
     display: block
 }
 
-.widget-progressbar-text-contrast.red-progressbar-text .progress-bar {
+.widget-progressbar-alert.widget-progressbar-text-contrast .progress-bar {
     color: red;
 }
