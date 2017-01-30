@@ -35,7 +35,7 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> 
     constructor(props: ProgressBarProps) {
         super(props);
 
-        this.state = { alertMessage: "" };
+        this.state = { alertMessage: this.validateClickActionConfig() };
     }
 
     render() {
@@ -63,8 +63,20 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> 
                     this.getProgressText(progress, maximumValue)
                 )
             ),
-            this.state.alertMessage ? createElement(Alert, { message: this.state.alertMessage }) : null
+            createElement(Alert, { message: this.state.alertMessage })
         );
+    }
+
+    private validateClickActionConfig(): string {
+        const errorMessage: string[] = [ "Error in progress bar configuration:" ];
+        if (this.props.onClickOption === "callMicroflow" && !this.props.onClickMicroflow) {
+            errorMessage.push("on click microflow is required");
+        }
+        if (this.props.onClickOption === "showPage" && !this.props.onClickPage) {
+            errorMessage.push("on click page is required");
+        }
+
+        return errorMessage.length > 1 ? errorMessage.join(" ") : "";
     }
 
     private progressValue(progress: number | null, maximumValue: number) {

@@ -93,11 +93,11 @@ class ProgressBar extends WidgetBase {
 
 // tslint:disable : only-arrow-functions
 dojoDeclare("com.mendix.widget.ProgressBar.ProgressBar", [ WidgetBase ], function(Source: any) {
-        let result: any = {};
-        for (let i in Source.prototype) {
-            if (i !== "constructor" && Source.prototype.hasOwnProperty(i)) {
-                result[i] = Source.prototype[i];
-            }
+    let result: any = {};
+    for (let i in Source.prototype) {
+        if (i !== "constructor" && Source.prototype.hasOwnProperty(i)) {
+            result[i] = Source.prototype[i];
         }
-        return result;
-    }(ProgressBar));
+    }
+    return result;
+}(ProgressBar));
