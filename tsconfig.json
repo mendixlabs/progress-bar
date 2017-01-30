@@ -19,10 +19,12 @@
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "skipLibCheck": true,
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true
     },
     "exclude": [
-        "node_modules/",
-        "dist/"
+        "dist/",
+        "node_modules/"
     ]
 }
