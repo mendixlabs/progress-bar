@@ -27,14 +27,12 @@ class ProgressBar extends WidgetBase {
     // Internal variables
     private contextObject: mendix.lib.MxObject;
 
-    update(object: mendix.lib.MxObject, callback?: Function) {
+    update(object: mendix.lib.MxObject, callback?: () => void) {
         this.contextObject = object;
         this.resetSubscriptions();
         this.updateRendering();
 
-        if (callback) {
-            callback();
-        }
+        if (callback) callback();
     }
 
     uninitialize(): boolean {
@@ -54,7 +52,9 @@ class ProgressBar extends WidgetBase {
         let maximumValue = 100;
         if (this.contextObject) {
             progress = Math.round(parseInt(contextObject.get(progressAttribute) as string, 10));
-            bootstrapStyle = contextObject.get(bootstrapStyleAttribute || "") as BootstrapStyle || bootstrapStyle;
+            bootstrapStyle = bootstrapStyleAttribute
+                ? contextObject.get(bootstrapStyleAttribute) as BootstrapStyle
+                : bootstrapStyle;
             maximumValue = maximumValueAttribute ? contextObject.get(maximumValueAttribute) as number : maximumValue;
         }
 

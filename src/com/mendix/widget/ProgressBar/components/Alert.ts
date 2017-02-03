@@ -1,6 +1,6 @@
-import { DOM, StatelessComponent } from "react";
+import { DOM } from "react";
 
-export const Alert: StatelessComponent<{ message?: string }> = (props) =>
+export const Alert = (props: { message?: string }) =>
     props.message
         ? DOM.div({ className: "alert alert-danger widget-progressbar-alert" }, props.message)
-        : null as any;
+        : null;
