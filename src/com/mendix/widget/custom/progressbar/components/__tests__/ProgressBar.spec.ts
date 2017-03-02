@@ -4,7 +4,7 @@ import { DOM, createElement } from "react";
 import { ProgressBar, ProgressBarProps } from "../ProgressBar";
 import { Alert } from "../Alert";
 
-import { MockContext, mockMendix } from "tests/mocks/Mendix";
+import { MockContext, mockMendix } from "../../../../../../../../tests/mocks/Mendix";
 import { random } from "faker";
 
 describe("Progress bar", () => {

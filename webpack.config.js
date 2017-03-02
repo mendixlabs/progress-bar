@@ -2,12 +2,14 @@ const webpack = require("webpack");
 const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const rootFilePath = "src/com/mendix/widget/custom/progressbar/";
+const fileName = "ProgressBar";
 
 module.exports = {
-    entry: "./src/com/mendix/widget/ProgressBar/ProgressBar.ts",
+    entry: "./" + rootFilePath + fileName + ".ts",
     output: {
         path: __dirname + "/dist/tmp",
-        filename: "src/com/mendix/widget/ProgressBar/ProgressBar.js",
+        filename: rootFilePath + fileName + ".js",
         libraryTarget: "umd"
     },
     resolve: {
@@ -32,7 +34,7 @@ module.exports = {
         ], {
             copyUnmodified: true
         }),
-        new ExtractTextPlugin("./src/com/mendix/widget/ProgressBar/ui/ProgressBar.css")
+        new ExtractTextPlugin("." + rootFilePath + fileName + ".css")
     ],
     watch: true
 };

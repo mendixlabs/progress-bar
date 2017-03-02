@@ -47,7 +47,7 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> 
                     className: classNames("progress", {
                         "widget-progressbar-alert": maximumValue < 1,
                         "widget-progressbar-clickable": !!onClickMicroflow,
-                        "widget-progressbar-text-contrast": percentage < colorSwitch
+                        "widget-progressbar-text-contrast": percentage < (colorSwitch as number)
                     }),
                     onClick: () => this.handleClick()
                 },

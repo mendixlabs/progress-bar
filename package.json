@@ -55,7 +55,7 @@
     "karma-remap-istanbul": "^0.4.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.1",
-    "mendix-client": "git+https://github.com/FlockOfBirds/Mendix-client-typing.git",
+    "mendix-client": "git+https://github.com/mistaguy/Mendix-client-typing.git",
     "react-addons-test-utils": "^15.4.2",
     "remap-istanbul": "^0.8.4",
     "source-map-loader": "^0.1.6",
@@ -63,7 +63,7 @@
     "ts-loader": "^2.0.0",
     "tslint": "^4.3.1",
     "tslint-eslint-rules": "^3.2.3",
-    "typescript": "^2.1.5",
+    "typescript": "^2.2.1",
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"
   },
