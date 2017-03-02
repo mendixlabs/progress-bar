@@ -5,51 +5,45 @@ import { Alert } from "./Alert";
 import "../ui/ProgressBar.css";
 
 interface ProgressBarProps {
+    alertMessage?: string;
     barType?: BarType;
     bootstrapStyle?: BootstrapStyle;
     colorSwitch?: number;
-    contextObject?: mendix.lib.MxObject;
     maximumValue: number;
-    onClickMicroflow?: string;
-    onClickOption?: OnClickOptions;
-    onClickPage?: string;
-    pageLocation?: PageLocation;
+    onClickAction?: () => void;
     progress: number | null;
 }
 
 type BootstrapStyle = "default" | "info" | "primary" | "success" | "warning" | "danger";
 type BarType = "default" | "striped" | "animated";
-export type OnClickOptions = "doNothing" | "showPage" | "callMicroflow";
-export type PageLocation = "content" | "popup" | "modal";
 
-class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> {
+class ProgressBar extends Component<ProgressBarProps, { alertMessage?: string }> {
     static defaultProps: ProgressBarProps = {
         barType: "default",
         bootstrapStyle: "default",
         colorSwitch: 50,
         maximumValue: 100,
-        onClickOption: "doNothing",
         progress: 0
     };
 
     constructor(props: ProgressBarProps) {
         super(props);
 
-        this.state = { alertMessage: this.validateClickActionConfig() };
+        this.state = { alertMessage: props.alertMessage };
     }
 
     render() {
-        const { barType, bootstrapStyle, colorSwitch, maximumValue, onClickMicroflow, progress } = this.props;
+        const { barType, bootstrapStyle, colorSwitch, maximumValue, onClickAction, progress } = this.props;
         const percentage = this.progressValue(progress, maximumValue);
         return DOM.div({ className: "widget-progressbar" },
             DOM.div(
                 {
                     className: classNames("progress", {
                         "widget-progressbar-alert": maximumValue < 1,
-                        "widget-progressbar-clickable": !!onClickMicroflow,
+                        "widget-progressbar-clickable": !!onClickAction,
                         "widget-progressbar-text-contrast": percentage < (colorSwitch as number)
                     }),
-                    onClick: () => this.handleClick()
+                    onClick: this.props.onClickAction
                 },
                 DOM.div(
                     {
@@ -65,18 +59,6 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> 
             ),
             createElement(Alert, { message: this.state.alertMessage })
         );
-    }
-
-    private validateClickActionConfig(): string {
-        const errorMessage: string[] = [ "Error in progress bar configuration:" ];
-        if (this.props.onClickOption === "callMicroflow" && !this.props.onClickMicroflow) {
-            errorMessage.push("on click microflow is required");
-        }
-        if (this.props.onClickOption === "showPage" && !this.props.onClickPage) {
-            errorMessage.push("on click page is required");
-        }
-
-        return errorMessage.length > 1 ? errorMessage.join(" ") : "";
     }
 
     private progressValue(progress: number | null, maximumValue: number) {
@@ -101,33 +83,6 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage: string }> 
         }
 
         return "";
-    }
-
-    private handleClick () {
-        const { contextObject, onClickMicroflow, onClickOption, onClickPage, pageLocation } = this.props;
-        if (contextObject && onClickOption === "callMicroflow" && onClickMicroflow && contextObject.getGuid()) {
-            window.mx.ui.action(onClickMicroflow, {
-                error: (error) =>
-                    this.setState({
-                        alertMessage: `Error while executing microflow ${onClickMicroflow}: ${error.message}`
-                    }),
-                params: {
-                    applyto: "selection",
-                    guids: [ contextObject.getGuid() ]
-                }
-            });
-        } else if (contextObject && onClickOption === "showPage" && onClickPage && contextObject.getGuid()) {
-            const context = new window.mendix.lib.MxContext();
-            context.setTrackId(contextObject.getGuid());
-            context.setTrackEntity(contextObject.getEntity());
-
-            window.mx.ui.openForm(onClickPage, {
-                error: (error) =>
-                    this.setState({ alertMessage: `Error while opening page ${onClickPage}: ${error.message}` }),
-                context,
-                location: pageLocation
-            });
-        }
     }
 }
 

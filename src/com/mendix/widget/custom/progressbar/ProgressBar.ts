@@ -3,14 +3,8 @@ import * as WidgetBase from "mxui/widget/_WidgetBase";
 import { createElement } from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 
-import {
-    BarType,
-    BootstrapStyle,
-    OnClickOptions,
-    PageLocation,
-    ProgressBar as ProgressBarComponent,
-    ProgressBarProps
-} from "./components/ProgressBar";
+import { BarType, BootstrapStyle } from "./components/ProgressBar";
+import ProgressBarContainer, { OnClickOptions, PageLocation } from "./components/ProgressBarContainer";
 
 class ProgressBar extends WidgetBase {
     // Parameters configured from modeler
@@ -25,12 +19,9 @@ class ProgressBar extends WidgetBase {
     onClickPage: string;
     pageLocation: PageLocation;
     // Internal variables
-    private contextObject: mendix.lib.MxObject;
 
-    update(object: mendix.lib.MxObject, callback?: () => void) {
-        this.contextObject = object;
-        this.resetSubscriptions();
-        this.updateRendering();
+    update(contextObject: mendix.lib.MxObject, callback?: () => void) {
+        this.updateRendering(contextObject);
 
         if (callback) callback();
     }
@@ -41,60 +32,27 @@ class ProgressBar extends WidgetBase {
         return true;
     }
 
-    private updateRendering() {
-        render(createElement(ProgressBarComponent, this.getProgressBarProps()), this.domNode);
-    }
-
-    private getProgressBarProps(): ProgressBarProps {
-        const { bootstrapStyleAttribute, contextObject, maximumValueAttribute, progressAttribute } = this;
-        let progress = 0;
-        let bootstrapStyle = this.progressStyle;
-        let maximumValue = 100;
-        if (this.contextObject) {
-            progress = Math.round(parseInt(contextObject.get(progressAttribute) as string, 10));
-            bootstrapStyle = bootstrapStyleAttribute
-                ? contextObject.get(bootstrapStyleAttribute) as BootstrapStyle
-                : bootstrapStyle;
-            maximumValue = maximumValueAttribute ? contextObject.get(maximumValueAttribute) as number : maximumValue;
-        }
-
-        return {
+    private updateRendering(contextObject: mendix.lib.MxObject) {
+        render(createElement(ProgressBarContainer, {
             barType: this.barType,
-            bootstrapStyle,
-            colorSwitch: this.textColorSwitch,
-            contextObject: this.contextObject,
-            maximumValue,
+            bootstrapStyleAttribute: this.bootstrapStyleAttribute,
+            contextObject,
+            maximumValueAttribute: this.maximumValueAttribute,
             onClickMicroflow: this.onClickMicroflow,
             onClickOption: this.onClickOption,
             onClickPage: this.onClickPage,
             pageLocation: this.pageLocation,
-            progress
-        };
-    }
-
-    private resetSubscriptions() {
-        this.unsubscribeAll();
-        if (this.contextObject) {
-            this.subscribe({
-                callback: () => this.updateRendering(),
-                guid: this.contextObject.getGuid()
-            });
-
-            [ this.progressAttribute, this.bootstrapStyleAttribute, this.maximumValueAttribute ].forEach((attribute) =>
-                this.subscribe({
-                    attr: attribute,
-                    callback: () => this.updateRendering(),
-                    guid: this.contextObject.getGuid()
-                })
-            );
-        }
+            progressAttribute: this.progressAttribute,
+            progressStyle: this.progressStyle,
+            textColorSwitch: this.textColorSwitch
+        }), this.domNode);
     }
 }
 
 // tslint:disable : only-arrow-functions
 dojoDeclare("com.mendix.widget.custom.progressbar.ProgressBar", [ WidgetBase ], function(Source: any) {
-    let result: any = {};
-    for (let i in Source.prototype) {
+    const result: any = {};
+    for (const i in Source.prototype) {
         if (i !== "constructor" && Source.prototype.hasOwnProperty(i)) {
             result[i] = Source.prototype[i];
         }
