@@ -7,9 +7,9 @@ interface ProgressBarContainerProps {
     bootstrapStyleAttribute: string;
     mxObject: mendix.lib.MxObject;
     maximumValueAttribute: string;
-    onClickMicroflow: string;
+    onClickMicroflow?: string;
     onClickOption: OnClickOptions;
-    onClickPage: string;
+    onClickPage?: string;
     progressAttribute: string;
     progressStyle: BootstrapStyle;
     textColorSwitch: number;
@@ -24,19 +24,21 @@ interface ProgressBarContainerState {
 }
 
 type OnClickOptions = "doNothing" | "showPage" | "callMicroflow";
-type PageLocation = "content" | "popup" | "modal";
 
-class ProgressBarContainer extends Component<ProgressBarContainerProps, ProgressBarContainerState> {
+export default class ProgressBarContainer extends Component<ProgressBarContainerProps, ProgressBarContainerState> {
     private subscriptionHandles: number[];
-    private subscriptionCallback: () => void;
+    private subscriptionCallback: (mxObject: mendix.lib.MxObject) => () => void;
 
     constructor(props: ProgressBarContainerProps) {
         super(props);
 
-        this.state = this.updateValues(props.mxObject);
+        const defaultState: ProgressBarContainerState = this.updateValues(props.mxObject);
+        defaultState.alertMessage = this.validateProps();
+        defaultState.showAlert = !!this.validateProps();
+        this.state = defaultState;
         this.subscriptionHandles = [];
         this.handleClick = this.handleClick.bind(this);
-        this.subscriptionCallback = () => this.setState(this.updateValues(this.props.mxObject));
+        this.subscriptionCallback = (mxObject) => () => this.setState(this.updateValues(mxObject));
     }
 
     render() {
@@ -50,17 +52,14 @@ class ProgressBarContainer extends Component<ProgressBarContainerProps, Progress
             bootstrapStyle: this.getBootstrapStyle(this.props.mxObject),
             colorSwitch: this.props.textColorSwitch,
             maximumValue: this.getValue<number>(this.props.mxObject, this.props.maximumValueAttribute, 100),
-            onClickAction: this.handleClick,
+            onClickAction: this.props.onClickMicroflow || this.props.onClickPage ? this.handleClick : undefined,
             progress: this.getValue<null>(this.props.mxObject, this.props.progressAttribute, null)
         });
     }
 
     componentWillReceiveProps(newProps: ProgressBarContainerProps) {
+        this.resetSubscription(newProps.mxObject);
         this.updateValues(newProps.mxObject);
-    }
-
-    componentDidUpdate() {
-        this.resetSubscription();
     }
 
     componentWillUnmount() {
@@ -97,18 +96,18 @@ class ProgressBarContainer extends Component<ProgressBarContainerProps, Progress
         return {
             bootstrapStyle: this.getBootstrapStyle(mxObject),
             maximumValue: this.getValue<number>(mxObject, this.props.maximumValueAttribute, 100),
-            progressValue: this.getValue<null>(mxObject, this.props.progressAttribute, null),
-            showAlert: !!this.validateProps()
+            progressValue: this.getValue<null>(mxObject, this.props.progressAttribute, null)
         };
     }
 
-    private resetSubscription() {
+    private resetSubscription(mxObject: mendix.lib.MxObject) {
         this.subscriptionHandles.forEach((handle) => window.mx.data.unsubscribe(handle));
+        this.subscriptionHandles = [];
 
-        if (this.props.mxObject) {
+        if (mxObject) {
             this.subscriptionHandles.push(window.mx.data.subscribe({
-                callback: this.subscriptionCallback,
-                guid: this.props.mxObject.getGuid()
+                callback: this.subscriptionCallback(mxObject),
+                guid: mxObject.getGuid()
             }));
             [
                 this.props.progressAttribute,
@@ -117,8 +116,8 @@ class ProgressBarContainer extends Component<ProgressBarContainerProps, Progress
             ].forEach((attr) => {
                 this.subscriptionHandles.push(window.mx.data.subscribe({
                     attr,
-                    callback: this.subscriptionCallback,
-                    guid: this.props.mxObject.getGuid()
+                    callback: this.subscriptionCallback(mxObject),
+                    guid: mxObject.getGuid()
                 }));
             });
         }
@@ -148,5 +147,3 @@ class ProgressBarContainer extends Component<ProgressBarContainerProps, Progress
         }
     }
 }
-
-export { OnClickOptions, ProgressBarContainer as default, PageLocation };
