@@ -5,7 +5,7 @@ import { Alert } from "./Alert";
 interface ProgressBarContainerProps {
     barType: BarType;
     bootstrapStyleAttribute: string;
-    contextObject: mendix.lib.MxObject;
+    mxObject: mendix.lib.MxObject;
     maximumValueAttribute: string;
     onClickMicroflow: string;
     onClickOption: OnClickOptions;
@@ -29,19 +29,15 @@ type PageLocation = "content" | "popup" | "modal";
 
 class ProgressBarContainer extends Component<ProgressBarContainerProps, ProgressBarContainerState> {
     private subscriptionHandles: number[];
+    private subscriptionCallback: () => void;
 
     constructor(props: ProgressBarContainerProps) {
         super(props);
 
-        this.state = {
-            alertMessage: this.validateProps(),
-            bootstrapStyle: this.getBootstrapStyle(props.contextObject),
-            maximumValue: this.getValue<number>(props.contextObject, this.props.maximumValueAttribute, 100),
-            progressValue: this.getValue<null>(props.contextObject, this.props.progressAttribute, null),
-            showAlert: !!this.validateProps()
-        };
+        this.state = this.updateValues(props.mxObject);
         this.subscriptionHandles = [];
-        this.resetSubscription(props.contextObject);
+        this.handleClick = this.handleClick.bind(this);
+        this.subscriptionCallback = () => this.setState(this.updateValues(this.props.mxObject));
     }
 
     render() {
@@ -52,17 +48,24 @@ class ProgressBarContainer extends Component<ProgressBarContainerProps, Progress
         return createElement(ProgressBar, {
             alertMessage: this.state.alertMessage,
             barType: this.props.barType,
-            bootstrapStyle: this.getBootstrapStyle(this.props.contextObject),
+            bootstrapStyle: this.getBootstrapStyle(this.props.mxObject),
             colorSwitch: this.props.textColorSwitch,
-            maximumValue: this.getValue<number>(this.props.contextObject, this.props.maximumValueAttribute, 100),
+            maximumValue: this.getValue<number>(this.props.mxObject, this.props.maximumValueAttribute, 100),
             onClickAction: this.handleClick,
-            progress: this.getValue<null>(this.props.contextObject, this.props.progressAttribute, null)
+            progress: this.getValue<null>(this.props.mxObject, this.props.progressAttribute, null)
         });
     }
 
     componentWillReceiveProps(newProps: ProgressBarContainerProps) {
-        this.resetSubscription(newProps.contextObject);
-        this.updateValues(newProps.contextObject);
+        this.updateValues(newProps.mxObject);
+    }
+
+    componentDidUpdate() {
+        this.resetSubscription();
+    }
+
+    componentWillUnmount() {
+        this.subscriptionHandles.forEach((handle) => window.mx.data.unsubscribe(handle));
     }
 
     private validateProps(): string {
@@ -79,33 +82,34 @@ class ProgressBarContainer extends Component<ProgressBarContainerProps, Progress
         return errorMessage;
     }
 
-    private getValue<T>(contextObject: mendix.lib.MxObject, attribute: string, defaultValue: T): T | number {
-        return contextObject && attribute ? parseFloat(contextObject.get(attribute) as string) : defaultValue;
+    private getValue<T>(mxObject: mendix.lib.MxObject, attribute: string, defaultValue: T): T | number {
+        return mxObject && attribute ? parseFloat(mxObject.get(attribute) as string) : defaultValue;
     }
 
-    private getBootstrapStyle(contextObject: mendix.lib.MxObject): BootstrapStyle {
-        if (contextObject && this.props.bootstrapStyleAttribute) {
-            return contextObject.get(this.props.bootstrapStyleAttribute) as BootstrapStyle;
+    private getBootstrapStyle(mxObject: mendix.lib.MxObject): BootstrapStyle {
+        if (mxObject && this.props.bootstrapStyleAttribute) {
+            return mxObject.get(this.props.bootstrapStyleAttribute) as BootstrapStyle;
         }
 
         return this.props.progressStyle;
     }
 
-    private updateValues(contextObject: mendix.lib.MxObject) {
-        this.setState({
-            bootstrapStyle: this.getBootstrapStyle(contextObject),
-            maximumValue: this.getValue<number>(contextObject, this.props.maximumValueAttribute, 100),
-            progressValue: this.getValue<null>(contextObject, this.props.progressAttribute, null)
-        });
+    private updateValues(mxObject: mendix.lib.MxObject): ProgressBarContainerState {
+        return {
+            bootstrapStyle: this.getBootstrapStyle(mxObject),
+            maximumValue: this.getValue<number>(mxObject, this.props.maximumValueAttribute, 100),
+            progressValue: this.getValue<null>(mxObject, this.props.progressAttribute, null),
+            showAlert: !!this.validateProps()
+        };
     }
 
-    private resetSubscription(contextObject: mendix.lib.MxObject) {
-        this.unSubscribe();
+    private resetSubscription() {
+        this.subscriptionHandles.forEach((handle) => window.mx.data.unsubscribe(handle));
 
-        if (contextObject) {
+        if (this.props.mxObject) {
             this.subscriptionHandles.push(window.mx.data.subscribe({
-                callback: () => this.updateValues(contextObject),
-                guid: contextObject.getGuid()
+                callback: this.subscriptionCallback,
+                guid: this.props.mxObject.getGuid()
             }));
             [
                 this.props.progressAttribute,
@@ -114,38 +118,32 @@ class ProgressBarContainer extends Component<ProgressBarContainerProps, Progress
             ].forEach((attr) => {
                 this.subscriptionHandles.push(window.mx.data.subscribe({
                     attr,
-                    callback: () => this.updateValues(contextObject),
-                    guid: contextObject.getGuid()
+                    callback: this.subscriptionCallback,
+                    guid: this.props.mxObject.getGuid()
                 }));
             });
         }
 
     }
 
-    private unSubscribe() {
-        this.subscriptionHandles.forEach((handle) => window.mx.data.unsubscribe(handle));
-    }
-
     private handleClick() {
-        const { contextObject, onClickMicroflow, onClickOption, onClickPage, pageLocation } = this.props;
-        if (contextObject && onClickOption === "callMicroflow" && onClickMicroflow && contextObject.getGuid()) {
+        const { mxObject, onClickMicroflow, onClickOption, onClickPage, pageLocation } = this.props;
+        if (mxObject && onClickOption === "callMicroflow" && onClickMicroflow && mxObject.getGuid()) {
             window.mx.ui.action(onClickMicroflow, {
+                context: new window.mendix.lib.MxContext(),
                 error: (error) =>
-                    this.setState({
-                        alertMessage: `Error while executing microflow ${onClickMicroflow}: ${error.message}`
-                    }),
+                    window.mx.ui.error(`Error while executing microflow ${onClickMicroflow}: ${error.message}`),
                 params: {
                     applyto: "selection",
-                    guids: [ contextObject.getGuid() ]
+                    guids: [ mxObject.getGuid() ]
                 }
             });
-        } else if (contextObject && onClickOption === "showPage" && onClickPage && contextObject.getGuid()) {
+        } else if (mxObject && onClickOption === "showPage" && onClickPage && mxObject.getGuid()) {
             const context = new window.mendix.lib.MxContext();
-            context.setContext(contextObject);
-
+            context.setContext(mxObject);
             window.mx.ui.openForm(onClickPage, {
                 error: (error) =>
-                    this.setState({ alertMessage: `Error while opening page ${onClickPage}: ${error.message}` }),
+                    window.mx.ui.error(`Error while opening page ${onClickPage}: ${error.message}`),
                 context,
                 location: pageLocation
             });
