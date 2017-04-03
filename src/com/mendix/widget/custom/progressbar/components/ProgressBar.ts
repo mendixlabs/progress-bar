@@ -41,13 +41,13 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage?: string }>
                     className: classNames("progress", {
                         "widget-progressbar-alert": maximumValue < 1,
                         "widget-progressbar-clickable": !!onClickAction,
-                        "widget-progressbar-text-contrast": percentage < (colorSwitch as number)
+                        "widget-progressbar-text-contrast": Math.abs(percentage) < (colorSwitch as number)
                     }),
                     onClick: this.props.onClickAction
                 },
                 DOM.div(
                     {
-                        className: classNames("progress-bar", `progress-bar-${bootstrapStyle}`, {
+                        className: classNames("progress-bar", `progress-bar-${bootstrapStyle || "default"}`, {
                             "active": barType === "animated",
                             "progress-bar-striped": barType === "striped" || barType === "animated",
                             "widget-progressbar-negative": percentage < 0

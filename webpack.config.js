@@ -34,7 +34,7 @@ module.exports = {
         ], {
             copyUnmodified: true
         }),
-        new ExtractTextPlugin("." + rootFilePath + fileName + ".css")
+        new ExtractTextPlugin("./" + rootFilePath + "ui/" + fileName + ".css")
     ],
     watch: true
 };
