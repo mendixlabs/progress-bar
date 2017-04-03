@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget id="com.mendix.widget.custom.progressbar.ProgressBar" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../xsd/widget.xsd">
+<widget id="com.mendix.widget.custom.progressbar.ProgressBar" needsEntityContext="true" offlineCapable="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../xsd/widget.xsd">
     <name>Progress Bar</name>
     <description>The widget lets you display a percentage as a bar</description>
     <icon>
@@ -36,9 +36,9 @@
             </attributeTypes>
         </property>
         <property key="textColorSwitch" type="integer" defaultValue="50">
-            <caption>Colour switch value</caption>
+            <caption>Color switch value</caption>
             <category>Display</category>
-            <description>The percentage at which the text gets a contrast colour (class) from black to white</description>
+            <description>The percentage at which the text gets a contrast color (class) from black to white</description>
         </property>
         <property key="barType" type="enumeration" required="true" defaultValue="default">
             <caption>Type</caption>
@@ -52,7 +52,7 @@
         </property>
         <property key="onClickOption" type="enumeration" required="true" defaultValue="doNothing">
             <caption>On click option</caption>
-            <category>Behaviour</category>
+            <category>Events</category>
             <description/>
             <enumerationValues>
                 <enumerationValue key="doNothing">Do nothing</enumerationValue>
@@ -62,13 +62,13 @@
         </property>
         <property key="onClickMicroflow" type="microflow" required="false">
             <caption>MicroFlow</caption>
-            <category>Behaviour</category>
+            <category>Events</category>
             <description>Microflow to execute when the progress bar is clicked</description>
             <returnType type="Void" />
         </property>
         <property key="onClickPage" type="form" required="false">
             <caption>Page</caption>
-            <category>Behaviour</category>
+            <category>Events</category>
             <description>The page to open when the progress bar is clicked</description>
         </property>
         <property key="progressStyle" type="enumeration" required="true" defaultValue="default">
