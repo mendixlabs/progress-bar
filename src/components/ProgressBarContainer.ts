@@ -10,7 +10,6 @@ interface ProgressBarContainerProps {
     onClickMicroflow: string;
     onClickOption: OnClickOptions;
     onClickPage: string;
-    pageLocation: PageLocation;
     progressAttribute: string;
     progressStyle: BootstrapStyle;
     textColorSwitch: number;
@@ -127,7 +126,7 @@ class ProgressBarContainer extends Component<ProgressBarContainerProps, Progress
     }
 
     private handleClick() {
-        const { mxObject, onClickMicroflow, onClickOption, onClickPage, pageLocation } = this.props;
+        const { mxObject, onClickMicroflow, onClickOption, onClickPage } = this.props;
         if (mxObject && onClickOption === "callMicroflow" && onClickMicroflow && mxObject.getGuid()) {
             window.mx.ui.action(onClickMicroflow, {
                 context: new window.mendix.lib.MxContext(),
@@ -144,8 +143,7 @@ class ProgressBarContainer extends Component<ProgressBarContainerProps, Progress
             window.mx.ui.openForm(onClickPage, {
                 error: (error) =>
                     window.mx.ui.error(`Error while opening page ${onClickPage}: ${error.message}`),
-                context,
-                location: pageLocation
+                context
             });
         }
     }

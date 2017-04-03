@@ -71,16 +71,6 @@
             <category>Behaviour</category>
             <description>The page to open when the progress bar is clicked</description>
         </property>
-        <property key="pageLocation" type="enumeration" required="true" defaultValue="popup">
-            <caption>Page location</caption>
-            <category>Behaviour</category>
-            <description/>
-            <enumerationValues>
-                <enumerationValue key="content">In content</enumerationValue>
-                <enumerationValue key="popup">Pop-up</enumerationValue>
-                <enumerationValue key="modal">Blocking pop-up</enumerationValue>
-            </enumerationValues>
-        </property>
         <property key="progressStyle" type="enumeration" required="true" defaultValue="default">
             <caption>Progress style</caption>
             <category>Display</category>
