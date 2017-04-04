@@ -9,15 +9,16 @@ describe("Progress bar", () => {
     const getProgressbar = (props: ProgressBarProps) => renderWrapper(props).childAt(0);
     const progress = 23;
     const maximumValue = 100;
+    const onClickSpy = jasmine.createSpy("onClick");
 
     it("has progress bar structure", () => {
-        const progressbar = shallow(createElement(ProgressBar, { maximumValue, progress }));
+        const progressbar = shallow(createElement(ProgressBar, { maximumValue, onClickAction: onClickSpy, progress }));
 
         expect(progressbar).toBeElement(
             DOM.div({ className: "widget-progressbar" },
                 DOM.div(
                     {
-                        className: "progress widget-progressbar-text-contrast",
+                        className: "progress widget-progressbar-text-contrast widget-progressbar-clickable",
                         onClick: jasmine.any(Function) as any
                     },
                     DOM.div({ className: "progress-bar progress-bar-default", style: { width: jasmine.any(String) } },

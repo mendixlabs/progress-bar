@@ -34,7 +34,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
 
         const defaultState: ProgressBarContainerState = this.updateValues(props.mxObject);
         defaultState.alertMessage = this.validateProps();
-        defaultState.showAlert = !!this.validateProps();
+        defaultState.showAlert = !!defaultState.alertMessage;
         this.state = defaultState;
         this.subscriptionHandles = [];
         this.handleClick = this.handleClick.bind(this);
@@ -49,17 +49,17 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         return createElement(ProgressBar, {
             alertMessage: this.state.alertMessage,
             barType: this.props.barType,
-            bootstrapStyle: this.getBootstrapStyle(this.props.mxObject),
+            bootstrapStyle: this.state.bootstrapStyle,
             colorSwitch: this.props.textColorSwitch,
-            maximumValue: this.getValue<number>(this.props.mxObject, this.props.maximumValueAttribute, 100),
+            maximumValue: this.state.maximumValue,
             onClickAction: this.props.onClickMicroflow || this.props.onClickPage ? this.handleClick : undefined,
-            progress: this.getValue<null>(this.props.mxObject, this.props.progressAttribute, null)
+            progress: this.state.progressValue
         });
     }
 
     componentWillReceiveProps(newProps: ProgressBarContainerProps) {
         this.resetSubscription(newProps.mxObject);
-        this.updateValues(newProps.mxObject);
+        this.setState(this.updateValues(newProps.mxObject));
     }
 
     componentWillUnmount() {
@@ -73,11 +73,8 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         } else if (this.props.onClickOption === "showPage" && !this.props.onClickPage) {
             errorMessage = "on click page is required";
         }
-        if (errorMessage) {
-            errorMessage = `Error in progress circle configuration: ${errorMessage}`;
-        }
 
-        return errorMessage;
+        return errorMessage && `Error in progress circle configuration: ${errorMessage}`;
     }
 
     private getValue<T>(mxObject: mendix.lib.MxObject, attribute: string, defaultValue: T): T | number {
@@ -138,7 +135,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
             });
         } else if (mxObject && onClickOption === "showPage" && onClickPage && mxObject.getGuid()) {
             const context = new window.mendix.lib.MxContext();
-            context.setContext(mxObject);
+            context.setContext(mxObject.getEntity(), mxObject.getGuid());
             window.mx.ui.openForm(onClickPage, {
                 error: (error) =>
                     window.mx.ui.error(`Error while opening page ${onClickPage}: ${error.message}`),

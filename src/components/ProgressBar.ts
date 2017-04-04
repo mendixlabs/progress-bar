@@ -9,7 +9,7 @@ interface ProgressBarProps {
     barType?: BarType;
     bootstrapStyle?: BootstrapStyle;
     colorSwitch?: number;
-    maximumValue: number;
+    maximumValue?: number;
     onClickAction?: () => void;
     progress: number | null;
 }
@@ -39,7 +39,7 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage?: string }>
             DOM.div(
                 {
                     className: classNames("progress", {
-                        "widget-progressbar-alert": maximumValue < 1,
+                        "widget-progressbar-alert": !!maximumValue && maximumValue < 1,
                         "widget-progressbar-clickable": !!onClickAction,
                         "widget-progressbar-text-contrast": Math.abs(percentage) < (colorSwitch as number)
                     }),
@@ -61,7 +61,7 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage?: string }>
         );
     }
 
-    private progressValue(progress: number | null, maximumValue: number) {
+    private progressValue(progress: number | null, maximumValue = 100) {
         if (typeof progress !== "number" || maximumValue < 1) {
             return 0;
         } else if (progress > maximumValue || Math.abs(this.calculatePercentage(progress, maximumValue)) > 100) {
@@ -71,15 +71,13 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage?: string }>
         return this.calculatePercentage(progress, maximumValue);
     }
 
-    private calculatePercentage(progress: number, maxValue: number) {
+    private calculatePercentage(progress: number, maxValue = 100) {
         return Math.round((progress / maxValue) * 100);
     }
 
-    private getProgressText(progress: number | null, maximumValue: number): string {
+    private getProgressText(progress: number | null, maximumValue = 100): string {
         if (progress) {
-            return maximumValue < 1
-                ? "Invalid"
-                : `${this.calculatePercentage(progress, maximumValue)}%`;
+            return maximumValue < 1 ? "Invalid" : `${this.calculatePercentage(progress, maximumValue)}%`;
         }
 
         return "";
