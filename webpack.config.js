@@ -6,25 +6,27 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
     entry: "./src/components/ProgressBarContainer.ts",
     output: {
-        path: __dirname + "/dist/tmp",
+        path: path.resolve(__dirname, "dist/tmp"),
         filename: "src/com/mendix/widget/custom/progressbar/ProgressBar.js",
         libraryTarget: "umd"
     },
     resolve: {
-        extensions: [ "", ".ts", ".js", ".json" ],
+        extensions: [ ".ts", ".js", ".json" ],
         alias: {
             "tests": path.resolve(__dirname, "./tests")
         }
     },
     module: {
-        loaders: [
+        rules: [
             { test: /\.ts$/, loader: "ts-loader" },
-            { test: /\.json$/, loader: "json" },
-            { test: /\.css$/, loader: ExtractTextPlugin.extract("style-loader", "css-loader") }
+            { test: /\.css$/, loader: ExtractTextPlugin.extract({
+                fallback: "style-loader",
+                use: "css-loader"
+            }) }
         ]
     },
     devtool: "source-map",
-    externals: [ "mxui/widget/_WidgetBase", "mendix/lang", "dojo/_base/declare" ],
+    externals: [ "react", "react-dom" ],
     plugins: [
         new CopyWebpackPlugin([
             { from: "src/**/*.js" },
@@ -32,7 +34,9 @@ module.exports = {
         ], {
             copyUnmodified: true
         }),
-        new ExtractTextPlugin("./src/com/mendix/widget/custom/progressbar/ui/ProgressBar.css")
-    ],
-    watch: true
+        new ExtractTextPlugin({ filename: "./src/com/mendix/widget/custom/progressbar/ui/ProgressBar.css" }),
+        new webpack.LoaderOptionsPlugin({
+            debug: true
+        })
+    ]
 };

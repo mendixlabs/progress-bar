@@ -98,6 +98,12 @@ describe("Progress bar", () => {
         });
     });
 
+    it("with no bootstrap style should have the class progress-bar-default", () => {
+        const progressbar = getProgressbar({ maximumValue, progress }).childAt(0);
+
+        expect(progressbar.hasClass("progress-bar-default")).toBe(true);
+    });
+
     describe("of type", () => {
         it("default should not have the classes progress-bar-striped and active", () => {
             const progressbar = getProgressbar({ barType: "default", maximumValue, progress }).childAt(0);

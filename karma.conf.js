@@ -1,26 +1,26 @@
 var webpackConfig = require("./webpack.config");
 const path = require("path");
 Object.assign(webpackConfig, {
-    debug: true,
     devtool: "inline-source-map",
-    externals: webpackConfig.externals.concat([
+    externals: [
         "react/lib/ExecutionEnvironment",
         "react/lib/ReactContext",
         "react/addons",
         "jsdom"
-    ])
+    ]
 });
 
 module.exports = function(config) {
     if (config.codeCoverage) {
         Object.assign(webpackConfig, {
             module: Object.assign(webpackConfig.module, {
-                postLoaders: [{
+                rules: webpackConfig.module.rules.concat([ {
                     test: /\.ts$/,
-                    loader: "istanbul-instrumenter",
+                    enforce: "post",
+                    loader: "istanbul-instrumenter-loader",
                     include: path.resolve(__dirname, "src"),
                     exclude: /\.(spec)\.ts$/
-                }]
+                } ])
             })
         });
     }

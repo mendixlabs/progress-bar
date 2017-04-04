@@ -74,7 +74,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
             errorMessage = "on click page is required";
         }
 
-        return errorMessage && `Error in progress circle configuration: ${errorMessage}`;
+        return errorMessage && `Error in progress bar configuration: ${errorMessage}`;
     }
 
     private getValue<T>(mxObject: mendix.lib.MxObject, attribute: string, defaultValue: T): T | number {
