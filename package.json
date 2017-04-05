@@ -1,6 +1,7 @@
 {
   "name": "progressbar",
-  "version": "0.1.0",
+  "widgetName": "ProgressBar",
+  "version": "1.0.0",
   "description": "Displays a progress bar",
   "directories": {
     "test": "test"
@@ -20,7 +21,7 @@
   "devDependencies": {
     "@types/big.js": "0.0.31",
     "@types/classnames": "0.0.32",
-    "@types/core-js": "^0.9.41",
+    "@types/core-js": "0.9.36",
     "@types/dojo": "^1.9.37",
     "@types/enzyme": "^2.7.7",
     "@types/faker": "^4.1.0",
@@ -56,8 +57,9 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.3",
     "mendix-client": "git+https://github.com/FlockOfBirds/Mendix-client-typing.git",
-    "mock-mendix": "git+https://github.com/FlockOfBirds/mock-mendix.git",
+    "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
+    "react-dom": "^15.4.2",
     "remap-istanbul": "^0.9.5",
     "source-map-loader": "^0.2.1",
     "style-loader": "^0.16.1",
@@ -69,8 +71,6 @@
     "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
-    "classnames": "^2.2.5",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "classnames": "^2.2.5"
   }
 }
