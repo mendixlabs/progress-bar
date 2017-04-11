@@ -17,7 +17,7 @@ interface ProgressBarProps {
 type BootstrapStyle = "default" | "info" | "primary" | "success" | "warning" | "danger";
 type BarType = "default" | "striped" | "animated";
 
-class ProgressBar extends Component<ProgressBarProps, { alertMessage?: string }> {
+class ProgressBar extends Component<ProgressBarProps, {}> {
     static defaultProps: ProgressBarProps = {
         barType: "default",
         bootstrapStyle: "default",
@@ -25,12 +25,6 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage?: string }>
         maximumValue: 100,
         progress: 0
     };
-
-    constructor(props: ProgressBarProps) {
-        super(props);
-
-        this.state = { alertMessage: props.alertMessage };
-    }
 
     render() {
         const { barType, bootstrapStyle, colorSwitch, maximumValue, onClickAction, progress } = this.props;
@@ -57,7 +51,7 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage?: string }>
                     this.getProgressText(progress, maximumValue)
                 )
             ),
-            createElement(Alert, { message: this.state.alertMessage })
+            createElement(Alert, { message: this.props.alertMessage })
         );
     }
 
