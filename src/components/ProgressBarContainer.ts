@@ -78,7 +78,14 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
     }
 
     private getValue<T>(mxObject: mendix.lib.MxObject, attribute: string, defaultValue: T): T | number {
-        return mxObject && attribute ? parseFloat(mxObject.get(attribute) as string) : defaultValue;
+        if (mxObject && attribute) {
+            const value = parseFloat(mxObject.get(attribute) as string);
+            if (value || value === 0) {
+                return value;
+            }
+        }
+
+        return defaultValue;
     }
 
     private getBootstrapStyle(mxObject: mendix.lib.MxObject): BootstrapStyle {
@@ -92,8 +99,8 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
     private updateValues(mxObject: mendix.lib.MxObject): ProgressBarContainerState {
         return {
             bootstrapStyle: this.getBootstrapStyle(mxObject),
-            maximumValue: this.getValue<number>(mxObject, this.props.maximumValueAttribute, 100),
-            progressValue: this.getValue<null>(mxObject, this.props.progressAttribute, null)
+            maximumValue: this.getValue(mxObject, this.props.maximumValueAttribute, 100),
+            progressValue: this.getValue(mxObject, this.props.progressAttribute, null)
         };
     }
 

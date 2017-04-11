@@ -15,10 +15,10 @@ describe("Progress bar", () => {
         const progressbar = shallow(createElement(ProgressBar, { maximumValue, onClickAction: onClickSpy, progress }));
 
         expect(progressbar).toBeElement(
-            DOM.div({ className: "widget-progressbar" },
+            DOM.div({ className: "widget-progress-bar" },
                 DOM.div(
                     {
-                        className: "progress widget-progressbar-text-contrast widget-progressbar-clickable",
+                        className: "progress widget-progress-bar-text-contrast widget-progress-bar-clickable",
                         onClick: jasmine.any(Function) as any
                     },
                     DOM.div({ className: "progress-bar progress-bar-default", style: { width: jasmine.any(String) } },
@@ -42,6 +42,12 @@ describe("Progress bar", () => {
         expect(wrapper.childAt(0).text()).toEqual(`${-20}%`);
     });
 
+    it("with no maximum value specified should set it to the default value of 100", () => {
+        const progressbar = getProgressbar({ progress }).childAt(0);
+
+        expect(progressbar.childAt(0).text()).toBe(`${progress}%`);
+    });
+
     it("should render the progress label invalid when the maximum value is less than 1", () => {
         const progressbar = getProgressbar({ maximumValue: 0, progress }).childAt(0);
 
@@ -54,16 +60,16 @@ describe("Progress bar", () => {
         expect(progressbar.text()).toEqual("");
     });
 
-    it("should have the class widget-progressbar-text-contrast when progress is below the threshold", () => {
+    it("should have the class widget-progress-bar-text-contrast when progress is below the threshold", () => {
         const progressbar = getProgressbar({ maximumValue, progress: 20 });
 
-        expect(progressbar.hasClass("widget-progressbar-text-contrast")).toBe(true);
+        expect(progressbar.hasClass("widget-progress-bar-text-contrast")).toBe(true);
     });
 
-    it("should not have the class widget-progressbar-text-contrast when progress exceeds the threshold", () => {
+    it("should not have the class widget-progress-bar-text-contrast when progress exceeds the threshold", () => {
         const progressbar = getProgressbar({ maximumValue, progress: 80 });
 
-        expect(progressbar.hasClass("widget-progressbar-text-contrast")).toBe(false);
+        expect(progressbar.hasClass("widget-progress-bar-text-contrast")).toBe(false);
     });
 
     describe("with bootstrap style", () => {

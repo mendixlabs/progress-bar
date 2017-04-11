@@ -35,13 +35,13 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage?: string }>
     render() {
         const { barType, bootstrapStyle, colorSwitch, maximumValue, onClickAction, progress } = this.props;
         const percentage = this.progressValue(progress, maximumValue);
-        return DOM.div({ className: "widget-progressbar" },
+        return DOM.div({ className: "widget-progress-bar" },
             DOM.div(
                 {
                     className: classNames("progress", {
-                        "widget-progressbar-alert": !!maximumValue && maximumValue < 1,
-                        "widget-progressbar-clickable": !!onClickAction,
-                        "widget-progressbar-text-contrast": Math.abs(percentage) < (colorSwitch as number)
+                        "widget-progress-bar-alert": !!maximumValue && maximumValue < 1,
+                        "widget-progress-bar-clickable": !!onClickAction,
+                        "widget-progress-bar-text-contrast": Math.abs(percentage) < (colorSwitch as number)
                     }),
                     onClick: this.props.onClickAction
                 },
@@ -50,7 +50,7 @@ class ProgressBar extends Component<ProgressBarProps, { alertMessage?: string }>
                         className: classNames("progress-bar", `progress-bar-${bootstrapStyle || "default"}`, {
                             "active": barType === "animated",
                             "progress-bar-striped": barType === "striped" || barType === "animated",
-                            "widget-progressbar-negative": percentage < 0
+                            "widget-progress-bar-negative": percentage < 0
                         }),
                         style: { width: `${Math.abs(percentage)}%` }
                     },
