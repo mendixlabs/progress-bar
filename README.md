@@ -15,6 +15,12 @@ https://progressbar-demo.mxapps.io/
 ## Usage
 Place the widget in the context of an object that has attributes for value and maximum value.
 
+Progress percentage is calculated as follows:
+
+    (value / maximumValue) * 100
+
+If the maximum value attribute is not set, maximum value defaults to 100.
+
 ## Issues, suggestions and feature requests
 We are actively maintaining this widget, please report any issues or suggestion for improvement at https://github.com/mendixlabs/progress-bar/issues
 
