@@ -33,7 +33,7 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
             DOM.div(
                 {
                     className: classNames("progress", {
-                        "widget-progress-bar-alert": !!maximumValue && maximumValue < 1,
+                        "widget-progress-bar-alert": !maximumValue || maximumValue < 1,
                         "widget-progress-bar-clickable": !!onClickAction,
                         "widget-progress-bar-text-contrast": Math.abs(percentage) < (colorSwitch as number)
                     }),
@@ -70,7 +70,7 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
     }
 
     private getProgressText(progress: number | null, maximumValue = 100): string {
-        if (progress) {
+        if (progress || progress === 0) {
             return maximumValue < 1 ? "Invalid" : `${this.calculatePercentage(progress, maximumValue)}%`;
         }
 
