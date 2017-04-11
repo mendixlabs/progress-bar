@@ -92,9 +92,9 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
     private validateProps(): string {
         let errorMessage = "";
         if (this.props.onClickOption === "callMicroflow" && !this.props.onClickMicroflow) {
-            errorMessage = "on click microflow is required";
+            errorMessage = "on click microflow is required in the 'Events' tab, 'Microflow' property";
         } else if (this.props.onClickOption === "showPage" && !this.props.onClickPage) {
-            errorMessage = "on click page is required";
+            errorMessage = "on click page is required in the 'Events' tab, 'Page' property";
         }
 
         return errorMessage && `Error in progress bar configuration: ${errorMessage}`;
