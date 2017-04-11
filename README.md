@@ -13,17 +13,17 @@ Mendix 7.1
 https://progressbar-demo.mxapps.io/
 
 ## Usage
-Place the widget in the context of an object that has attributes for value and maximum value
+Place the widget in the context of an object that has attributes for value and maximum value.
 
 ## Issues, suggestions and feature requests
-We are actively maintaining this widget, please report any issues or suggestion for improvement at https://github.com/mendixlabs/progress-circle/issues
+We are actively maintaining this widget, please report any issues or suggestion for improvement at https://github.com/mendixlabs/progress-bar/issues
 
 ## Development
 Prerequisite: Install git, node package manager, webpack CLI, grunt CLI, Karma CLI
 
 To contribute, fork and clone.
 
-    > git clone https://github.com/mendixlabs/progress-circle.git
+    > git clone https://github.com/mendixlabs/progress-bar.git
 
 The code is in typescript. Use a typescript IDE of your choice, like Visual Studio Code or WebStorm.
 

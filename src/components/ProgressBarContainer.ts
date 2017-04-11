@@ -63,7 +63,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
     }
 
     componentWillUnmount() {
-        this.subscriptionHandles.forEach(handle => window.mx.data.unsubscribe(handle));
+        this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
     }
 
     private validateProps(): string {
@@ -98,7 +98,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
     }
 
     private resetSubscription(mxObject: mendix.lib.MxObject) {
-        this.subscriptionHandles.forEach(handle => window.mx.data.unsubscribe(handle));
+        this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
         this.subscriptionHandles = [];
 
         if (mxObject) {
@@ -123,19 +123,18 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
 
     private handleClick() {
         const { mxObject, onClickMicroflow, onClickOption, onClickPage } = this.props;
-        if (mxObject && onClickOption === "callMicroflow" && onClickMicroflow && mxObject.getGuid()) {
+        if (!mxObject || !mxObject.getGuid()) {
+            return;
+        }
+        const context = new window.mendix.lib.MxContext();
+        context.setContext(mxObject.getEntity(), mxObject.getGuid());
+        if (onClickOption === "callMicroflow" && onClickMicroflow) {
             window.mx.ui.action(onClickMicroflow, {
-                context: new window.mendix.lib.MxContext(),
+                context,
                 error: error =>
-                    window.mx.ui.error(`Error while executing microflow ${onClickMicroflow}: ${error.message}`),
-                params: {
-                    applyto: "selection",
-                    guids: [mxObject.getGuid()]
-                }
+                    window.mx.ui.error(`Error while executing microflow ${onClickMicroflow}: ${error.message}`)
             });
-        } else if (mxObject && onClickOption === "showPage" && onClickPage && mxObject.getGuid()) {
-            const context = new window.mendix.lib.MxContext();
-            context.setContext(mxObject.getEntity(), mxObject.getGuid());
+        } else if (onClickOption === "showPage" && onClickPage) {
             window.mx.ui.openForm(onClickPage, {
                 error: error =>
                     window.mx.ui.error(`Error while opening page ${onClickPage}: ${error.message}`),

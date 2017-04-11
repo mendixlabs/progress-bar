@@ -51,7 +51,7 @@
             </enumerationValues>
         </property>
         <property key="onClickOption" type="enumeration" defaultValue="doNothing">
-            <caption>On click option</caption>
+            <caption>On click</caption>
             <category>Events</category>
             <description/>
             <enumerationValues>
@@ -61,7 +61,7 @@
             </enumerationValues>
         </property>
         <property key="onClickMicroflow" type="microflow" required="false">
-            <caption>MicroFlow</caption>
+            <caption>Microflow</caption>
             <category>Events</category>
             <description>Microflow to execute when the progress bar is clicked</description>
             <returnType type="Void" />
