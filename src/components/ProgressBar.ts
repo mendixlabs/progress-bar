@@ -8,10 +8,12 @@ interface ProgressBarProps {
     alertMessage?: string;
     barType?: BarType;
     bootstrapStyle?: BootstrapStyle;
+    className?: string;
     colorSwitch?: number;
     maximumValue?: number;
     onClickAction?: () => void;
-    progress: number | null;
+    progress?: number;
+    style?: object;
 }
 
 type BootstrapStyle = "default" | "info" | "primary" | "success" | "warning" | "danger";
@@ -22,14 +24,13 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
         barType: "default",
         bootstrapStyle: "default",
         colorSwitch: 50,
-        maximumValue: 100,
-        progress: 0
+        maximumValue: 100
     };
 
     render() {
         const { barType, bootstrapStyle, colorSwitch, maximumValue, onClickAction, progress } = this.props;
         const percentage = this.progressValue(progress, maximumValue);
-        return DOM.div({ className: "widget-progress-bar" },
+        return DOM.div({ className: classNames("widget-progress-bar", this.props.className), style: this.props.style },
             DOM.div(
                 {
                     className: classNames("progress", {
@@ -55,7 +56,7 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
         );
     }
 
-    private progressValue(progress: number | null, maximumValue = 100): number {
+    private progressValue(progress?: number, maximumValue = 100): number {
         if (typeof progress !== "number" || maximumValue < 1) {
             return 0;
         } else if (progress > maximumValue || Math.abs(this.calculatePercentage(progress, maximumValue)) > 100) {
@@ -69,7 +70,7 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
         return Math.round((progress / maxValue) * 100);
     }
 
-    private getProgressText(progress: number | null, maximumValue = 100): string {
+    private getProgressText(progress?: number, maximumValue = 100): string {
         if (progress || progress === 0) {
             return maximumValue < 1 ? "Invalid" : `${this.calculatePercentage(progress, maximumValue)}%`;
         }

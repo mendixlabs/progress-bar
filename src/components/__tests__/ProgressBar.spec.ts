@@ -55,7 +55,7 @@ describe("Progress bar", () => {
     });
 
     it("should not render the progress label when no progress value is specified", () => {
-        const progressbar = getProgressbar({ maximumValue, progress: null }).childAt(0);
+        const progressbar = getProgressbar({ maximumValue }).childAt(0);
 
         expect(progressbar.text()).toEqual("");
     });

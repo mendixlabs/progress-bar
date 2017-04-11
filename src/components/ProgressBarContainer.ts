@@ -2,10 +2,15 @@ import { Component, createElement } from "react";
 import { BarType, BootstrapStyle, ProgressBar } from "./ProgressBar";
 import { Alert } from "./Alert";
 
-interface ProgressBarContainerProps {
+interface WrapperProps {
+    class?: string;
+    mxObject?: mendix.lib.MxObject;
+    style?: string;
+}
+
+interface ProgressBarContainerProps extends WrapperProps {
     barType: BarType;
     bootstrapStyleAttribute: string;
-    mxObject: mendix.lib.MxObject;
     maximumValueAttribute: string;
     onClickMicroflow?: string;
     onClickOption: OnClickOptions;
@@ -20,7 +25,7 @@ interface ProgressBarContainerState {
     alertMessage?: string;
     maximumValue?: number;
     showAlert?: boolean;
-    progressValue: number | null;
+    progressValue?: number;
 }
 
 type OnClickOptions = "doNothing" | "showPage" | "callMicroflow";
@@ -28,6 +33,22 @@ type OnClickOptions = "doNothing" | "showPage" | "callMicroflow";
 export default class ProgressBarContainer extends Component<ProgressBarContainerProps, ProgressBarContainerState> {
     private subscriptionHandles: number[];
     private subscriptionCallback: (mxObject: mendix.lib.MxObject) => () => void;
+
+    static parseStyle(style = ""): {[key: string]: string} {
+        try {
+            return style.split(";").reduce<{[key: string]: string}>((styleObject, line) => {
+                const pair = line.split(":");
+                if (pair.length === 2) {
+                    const name = pair[0].trim().replace(/(-.)/g, match => match[1].toUpperCase());
+                    styleObject[name] = pair[1].trim();
+                }
+                return styleObject;
+            }, {});
+        } catch (error) {
+            console.log("Failed to parse style", style, error);
+        }
+        return {};
+    }
 
     constructor(props: ProgressBarContainerProps) {
         super(props);
@@ -50,10 +71,12 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
             alertMessage: this.state.alertMessage,
             barType: this.props.barType,
             bootstrapStyle: this.state.bootstrapStyle,
+            className: this.props.class,
             colorSwitch: this.props.textColorSwitch,
             maximumValue: this.state.maximumValue,
             onClickAction: this.props.onClickMicroflow || this.props.onClickPage ? this.handleClick : undefined,
-            progress: this.state.progressValue
+            progress: this.state.progressValue,
+            style: ProgressBarContainer.parseStyle(this.props.style)
         });
     }
 
@@ -77,7 +100,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         return errorMessage && `Error in progress bar configuration: ${errorMessage}`;
     }
 
-    private getValue<T>(mxObject: mendix.lib.MxObject, attribute: string, defaultValue: T): T | number {
+    private getValue<T>(attribute: string, mxObject?: mendix.lib.MxObject, defaultValue?: T): T | number | undefined {
         if (mxObject && attribute) {
             const value = parseFloat(mxObject.get(attribute) as string);
             if (value || value === 0) {
@@ -88,7 +111,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         return defaultValue;
     }
 
-    private getBootstrapStyle(mxObject: mendix.lib.MxObject): BootstrapStyle {
+    private getBootstrapStyle(mxObject?: mendix.lib.MxObject): BootstrapStyle {
         if (mxObject && this.props.bootstrapStyleAttribute) {
             return mxObject.get(this.props.bootstrapStyleAttribute) as BootstrapStyle;
         }
@@ -96,15 +119,15 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         return this.props.progressStyle;
     }
 
-    private updateValues(mxObject: mendix.lib.MxObject): ProgressBarContainerState {
+    private updateValues(mxObject?: mendix.lib.MxObject): ProgressBarContainerState {
         return {
             bootstrapStyle: this.getBootstrapStyle(mxObject),
-            maximumValue: this.getValue(mxObject, this.props.maximumValueAttribute, 100),
-            progressValue: this.getValue(mxObject, this.props.progressAttribute, null)
+            maximumValue: this.getValue(this.props.maximumValueAttribute, mxObject, 100),
+            progressValue: this.getValue<undefined>(this.props.progressAttribute, mxObject)
         };
     }
 
-    private resetSubscription(mxObject: mendix.lib.MxObject) {
+    private resetSubscription(mxObject?: mendix.lib.MxObject) {
         this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
         this.subscriptionHandles = [];
 
