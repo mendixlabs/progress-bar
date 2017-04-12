@@ -43,7 +43,7 @@ describe("Progress bar", () => {
     });
 
     it("with no maximum value specified should set it to the default value of 100", () => {
-        const progressbar = getProgressbar({ progress }).childAt(0);
+        const progressbar = getProgressbar({ progress } as ProgressBarProps).childAt(0);
 
         expect(progressbar.childAt(0).text()).toBe(`${progress}%`);
     });
@@ -58,6 +58,12 @@ describe("Progress bar", () => {
         const progressbar = getProgressbar({ maximumValue }).childAt(0);
 
         expect(progressbar.text()).toEqual("");
+    });
+
+    it("should have the class widget-progress-bar-negative when the progress value is negative", () => {
+        const progressbar = getProgressbar({ maximumValue, progress: -20 });
+
+        expect(progressbar.childAt(0).hasClass("widget-progress-bar-negative")).toBe(true);
     });
 
     it("should have the class widget-progress-bar-text-contrast when progress is below the threshold", () => {
