@@ -21,6 +21,10 @@ Progress percentage is calculated as follows:
 
 If the maximum value attribute is not set, maximum value defaults to 100.
 
+Depending on the specified bootstrap style (primary, success, info, warning, danger), the progress bar can appear in the associated colors.
+
+For negative progress values, the bar is drawn from right to left.
+
 ## Issues, suggestions and feature requests
 We are actively maintaining this widget, please report any issues or suggestion for improvement at https://github.com/mendixlabs/progress-bar/issues
 
