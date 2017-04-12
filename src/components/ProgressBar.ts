@@ -2,7 +2,7 @@ import { Component, DOM, createElement } from "react";
 import * as classNames from "classnames";
 
 import { Alert } from "./Alert";
-import "../ui/ProgressBar.css";
+import "../ui/ProgressBar.scss";
 
 interface ProgressBarProps {
     alertMessage?: string;

@@ -22,7 +22,14 @@ module.exports = {
             { test: /\.css$/, loader: ExtractTextPlugin.extract({
                 fallback: "style-loader",
                 use: "css-loader"
-            }) }
+            }) },
+            { test: /\.scss$/, use: ExtractTextPlugin.extract({
+                use: [
+                    { loader: "css-loader" },
+                    { loader: "sass-loader" }
+                ],
+                fallback: "style-loader"
+            })}
         ]
     },
     devtool: "source-map",
