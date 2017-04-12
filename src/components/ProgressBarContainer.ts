@@ -10,20 +10,20 @@ interface WrapperProps {
 
 interface ProgressBarContainerProps extends WrapperProps {
     barType: BarType;
+    bootstrapStyle: BootstrapStyle;
     bootstrapStyleAttribute: string;
     maximumValueAttribute: string;
     onClickMicroflow?: string;
     onClickOption: OnClickOptions;
     onClickPage?: string;
     progressAttribute: string;
-    progressStyle: BootstrapStyle;
     textColorSwitch: number;
 }
 
 interface ProgressBarContainerState {
     bootstrapStyle?: BootstrapStyle;
     alertMessage?: string;
-    maximumValue?: number;
+    maximumValue: number;
     showAlert?: boolean;
     progressValue?: number;
 }
@@ -33,6 +33,7 @@ type OnClickOptions = "doNothing" | "showPage" | "callMicroflow";
 export default class ProgressBarContainer extends Component<ProgressBarContainerProps, ProgressBarContainerState> {
     private subscriptionHandles: number[];
     private subscriptionCallback: (mxObject: mendix.lib.MxObject) => () => void;
+    private defaultMaximumValue = 100;
 
     static parseStyle(style = ""): {[key: string]: string} {
         try {
@@ -100,7 +101,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         return errorMessage && `Error in progress bar configuration: ${errorMessage}`;
     }
 
-    private getValue<T>(attribute: string, mxObject?: mendix.lib.MxObject, defaultValue?: T): T | number | undefined {
+    private getValue<T>(attribute: string, defaultValue: T, mxObject?: mendix.lib.MxObject): T | number {
         if (mxObject && attribute) {
             const value = parseFloat(mxObject.get(attribute) as string);
             if (value || value === 0) {
@@ -116,14 +117,14 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
             return mxObject.get(this.props.bootstrapStyleAttribute) as BootstrapStyle;
         }
 
-        return this.props.progressStyle;
+        return this.props.bootstrapStyle;
     }
 
     private updateValues(mxObject?: mendix.lib.MxObject): ProgressBarContainerState {
         return {
             bootstrapStyle: this.getBootstrapStyle(mxObject),
-            maximumValue: this.getValue(this.props.maximumValueAttribute, mxObject, 100),
-            progressValue: this.getValue<undefined>(this.props.progressAttribute, mxObject)
+            maximumValue: this.getValue(this.props.maximumValueAttribute, this.defaultMaximumValue, mxObject),
+            progressValue: this.getValue(this.props.progressAttribute, undefined, mxObject)
         };
     }
 

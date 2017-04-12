@@ -10,7 +10,7 @@ interface ProgressBarProps {
     bootstrapStyle?: BootstrapStyle;
     className?: string;
     colorSwitch?: number;
-    maximumValue?: number;
+    maximumValue: number;
     onClickAction?: () => void;
     progress?: number;
     style?: object;
@@ -29,7 +29,7 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
 
     render() {
         const { barType, bootstrapStyle, colorSwitch, maximumValue, onClickAction, progress } = this.props;
-        const percentage = this.progressValue(progress, maximumValue);
+        const percentage = this.progressValue(maximumValue as number, progress);
         return DOM.div({ className: classNames("widget-progress-bar", this.props.className), style: this.props.style },
             DOM.div(
                 {
@@ -49,14 +49,14 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
                         }),
                         style: { width: `${Math.abs(percentage)}%` }
                     },
-                    this.getProgressText(progress, maximumValue)
+                    this.getProgressText(maximumValue, progress)
                 )
             ),
             createElement(Alert, { message: this.props.alertMessage })
         );
     }
 
-    private progressValue(progress?: number, maximumValue = 100): number {
+    private progressValue(maximumValue: number, progress?: number): number {
         if (typeof progress !== "number" || maximumValue < 1) {
             return 0;
         } else if (progress > maximumValue || Math.abs(this.calculatePercentage(progress, maximumValue)) > 100) {
@@ -66,11 +66,11 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
         return this.calculatePercentage(progress, maximumValue);
     }
 
-    private calculatePercentage(progress: number, maxValue = 100): number {
-        return Math.round((progress / maxValue) * 100);
+    private calculatePercentage(progress: number, maximumValue: number): number {
+        return Math.round((progress / maximumValue) * 100);
     }
 
-    private getProgressText(progress?: number, maximumValue = 100): string {
+    private getProgressText(maximumValue: number, progress?: number): string {
         if (progress || progress === 0) {
             return maximumValue < 1 ? "Invalid" : `${this.calculatePercentage(progress, maximumValue)}%`;
         }

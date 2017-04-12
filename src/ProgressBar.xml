@@ -27,9 +27,9 @@
             </attributeTypes>
         </property>
         <property key="bootstrapStyleAttribute" type="attribute" required="false">
-            <caption>Style attribute</caption>
+            <caption>Bootstrap style attribute</caption>
             <category>Data source</category>
-            <description>Value of attribute should be: info, warning, danger, success. Alternatively use the display 'Bar style' property</description>
+            <description>Value of attribute should be: info, warning, danger, success. Alternatively use the display 'Bootstrap style' property in the Display tab</description>
             <attributeTypes>
                 <attributeType name="Enum" />
                 <attributeType name="String" />
@@ -71,12 +71,12 @@
             <category>Events</category>
             <description>The page to open when the progress bar is clicked</description>
         </property>
-        <property key="progressStyle" type="enumeration" defaultValue="default">
-            <caption>Progress style</caption>
+        <property key="bootstrapStyle" type="enumeration" defaultValue="default">
+            <caption>Bootstrap style</caption>
             <category>Display</category>
             <description>The color of the progress bar using bootstrap classes. Only used when 'Style attribute' is not set</description>
             <enumerationValues>
-                <enumerationValue key="default">None</enumerationValue>
+                <enumerationValue key="default">Default</enumerationValue>
                 <enumerationValue key="success">Success</enumerationValue>
                 <enumerationValue key="info">Info</enumerationValue>
                 <enumerationValue key="warning">Warning</enumerationValue>
