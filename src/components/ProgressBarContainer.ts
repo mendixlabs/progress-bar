@@ -8,7 +8,7 @@ interface WrapperProps {
     style?: string;
 }
 
-interface ProgressBarContainerProps extends WrapperProps {
+export interface ProgressBarContainerProps extends WrapperProps {
     barType: BarType;
     bootstrapStyle: BootstrapStyle;
     bootstrapStyleAttribute: string;
@@ -46,6 +46,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
                 return styleObject;
             }, {});
         } catch (error) {
+            // tslint:disable-next-line:no-console
             console.log("Failed to parse style", style, error);
         }
         return {};
