@@ -4,6 +4,7 @@ import { Alert } from "./Alert";
 
 interface WrapperProps {
     class?: string;
+    mxform?: mxui.lib.form._FormBase;
     mxObject?: mendix.lib.MxObject;
     style?: string;
 }
@@ -156,7 +157,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
     }
 
     private handleClick() {
-        const { mxObject, onClickMicroflow, onClickOption, onClickPage } = this.props;
+        const { mxform, mxObject, onClickMicroflow, onClickOption, onClickPage } = this.props;
         if (!mxObject || !mxObject.getGuid()) {
             return;
         }
@@ -166,7 +167,8 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
             window.mx.ui.action(onClickMicroflow, {
                 context,
                 error: error =>
-                    window.mx.ui.error(`Error while executing microflow ${onClickMicroflow}: ${error.message}`)
+                    window.mx.ui.error(`Error while executing microflow ${onClickMicroflow}: ${error.message}`),
+                origin: mxform
             });
         } else if (onClickOption === "showPage" && onClickPage) {
             window.mx.ui.openForm(onClickPage, {
