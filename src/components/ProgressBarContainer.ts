@@ -56,7 +56,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         super(props);
 
         const defaultState: ProgressBarContainerState = this.updateValues(props.mxObject);
-        defaultState.alertMessage = this.validateProps();
+        defaultState.alertMessage = ProgressBarContainer.validateProps(props);
         defaultState.showAlert = !!defaultState.alertMessage;
         this.state = defaultState;
         this.subscriptionHandles = [];
@@ -93,11 +93,11 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
     }
 
-    private validateProps(): string {
+    public static validateProps(props: ProgressBarContainerProps) {
         let errorMessage = "";
-        if (this.props.onClickOption === "callMicroflow" && !this.props.onClickMicroflow) {
+        if (props.onClickOption === "callMicroflow" && !props.onClickMicroflow) {
             errorMessage = "on click microflow is required in the 'Events' tab, 'Microflow' property";
-        } else if (this.props.onClickOption === "showPage" && !this.props.onClickPage) {
+        } else if (props.onClickOption === "showPage" && !props.onClickPage) {
             errorMessage = "on click page is required in the 'Events' tab, 'Page' property";
         }
 
@@ -170,9 +170,9 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
             });
         } else if (onClickOption === "showPage" && onClickPage) {
             window.mx.ui.openForm(onClickPage, {
+                context,
                 error: error =>
-                    window.mx.ui.error(`Error while opening page ${onClickPage}: ${error.message}`),
-                context
+                    window.mx.ui.error(`Error while opening page ${onClickPage}: ${error.message}`)
             });
         }
     }

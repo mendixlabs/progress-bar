@@ -1,6 +1,7 @@
 import { Component, createElement } from "react";
 import { ProgressBar, ProgressBarProps } from "./components/ProgressBar";
 import ProgressBarContainer, { ProgressBarContainerProps } from "./components/ProgressBarContainer";
+import { Alert } from "./components/Alert";
 
 import * as css from "./ui/ProgressBar.scss";
 
@@ -11,6 +12,10 @@ export class preview extends Component<ProgressBarContainerProps, {}> {
     }
 
     render() {
+        const warnings = ProgressBarContainer.validateProps(this.props);
+        if (warnings) {
+            return createElement(Alert, { message: warnings });
+        }
         return createElement(ProgressBar, this.transformProps(this.props));
     }
 
