@@ -72,7 +72,7 @@
             <description>The page to open when the progress bar is clicked</description>
         </property>
         <property key="bootstrapStyle" type="enumeration" defaultValue="default">
-            <caption>Bootstrap style</caption>
+            <caption>Bar style</caption>
             <category>Display</category>
             <description>The color of the progress bar using bootstrap classes. Only used when 'Style attribute' is not set</description>
             <enumerationValues>

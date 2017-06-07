@@ -4,7 +4,7 @@ import { Alert } from "./Alert";
 
 interface WrapperProps {
     class?: string;
-    mxform?: mxui.lib.form._FormBase;
+    mxform: mxui.lib.form._FormBase;
     mxObject?: mendix.lib.MxObject;
     style?: string;
 }

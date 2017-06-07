@@ -7,7 +7,7 @@ Displays a progress bar
 * Bar bootstrap colors: success, info, warning or danger
 
 ## Dependencies
-Mendix 7.3
+Mendix 7.1
 
 ## Demo project
 https://progressbar-demo.mxapps.io/
