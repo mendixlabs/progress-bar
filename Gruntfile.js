@@ -1,18 +1,14 @@
 "use strict";
 const webpack = require("webpack");
 const webpackConfig = require("./webpack.config");
+const merge = require("webpack-merge");
+
 const webpackConfigRelease = [];
-
-webpackConfig.forEach(function (currentWebpackConfig) {
-    const webpackLoaderOptionsPlugin = currentWebpackConfig.plugins.slice(0);
-    const configRelease = {};
-
-    webpackLoaderOptionsPlugin.push(new webpack.optimize.UglifyJsPlugin());
-    Object.assign(configRelease, currentWebpackConfig, {
+webpackConfig.forEach(function(config) {
+    webpackConfigRelease.push(merge(config, {
         devtool: false,
-        plugins: webpackLoaderOptionsPlugin
-    });
-    webpackConfigRelease.push(configRelease)
+        plugins: [ new webpack.optimize.UglifyJsPlugin() ]
+    }));
 });
 
 module.exports = function(grunt) {
