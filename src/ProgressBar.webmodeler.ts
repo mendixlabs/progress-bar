@@ -1,4 +1,4 @@
-import { Component, createElement } from "react";
+import { Component, DOM, createElement } from "react";
 import { ProgressBar, ProgressBarProps } from "./components/ProgressBar";
 import ProgressBarContainer, { ProgressBarContainerProps } from "./components/ProgressBarContainer";
 import { Alert } from "./components/Alert";
@@ -10,10 +10,14 @@ export class preview extends Component<ProgressBarContainerProps, {}> {
 
     render() {
         const warnings = ProgressBarContainer.validateProps(this.props);
+        const bar = createElement(ProgressBar, this.transformProps(this.props));
         if (warnings) {
-            return createElement(Alert, { message: warnings });
+            return DOM.div({},
+                createElement(Alert, { message: warnings }),
+                bar
+            );
         }
-        return createElement(ProgressBar, this.transformProps(this.props));
+        return bar;
     }
 
     private transformProps(props: ProgressBarContainerProps): ProgressBarProps {
@@ -30,4 +34,21 @@ export class preview extends Component<ProgressBarContainerProps, {}> {
 
 export function getPreviewCss() {
     return require("./ui/ProgressBar.scss");
+}
+
+export function getVisibleProperties(valueMap: any, visibilityMap: any) {
+    if (valueMap.onClickOption === "doNothing") {
+        visibilityMap.onClickMicroflow = false;
+        visibilityMap.onClickPage = false;
+    }
+    if (valueMap.onClickOption === "callMicroflow") {
+        visibilityMap.onClickMicroflow = true;
+        visibilityMap.onClickPage = false;
+    }
+    if (valueMap.onClickOption === "showPage") {
+        visibilityMap.onClickMicroflow = false;
+        visibilityMap.onClickPage = true;
+    }
+
+    return visibilityMap;
 }

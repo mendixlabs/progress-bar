@@ -60,16 +60,16 @@
                 <enumerationValue key="callMicroflow">Call a microflow</enumerationValue>
             </enumerationValues>
         </property>
+        <property key="onClickPage" type="form" required="false">
+            <caption>Page</caption>
+            <category>Events</category>
+            <description>The page to open when the progress bar is clicked</description>
+        </property>
         <property key="onClickMicroflow" type="microflow" required="false">
             <caption>Microflow</caption>
             <category>Events</category>
             <description>Microflow to execute when the progress bar is clicked</description>
             <returnType type="Void" />
-        </property>
-        <property key="onClickPage" type="form" required="false">
-            <caption>Page</caption>
-            <category>Events</category>
-            <description>The page to open when the progress bar is clicked</description>
         </property>
         <property key="bootstrapStyle" type="enumeration" defaultValue="default">
             <caption>Bar style</caption>
