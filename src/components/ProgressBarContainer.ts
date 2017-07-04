@@ -116,7 +116,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         return defaultValue;
     }
 
-    private getStyle(mxObject?: mendix.lib.MxObject): BarStyle {
+    private getBarStyle(mxObject?: mendix.lib.MxObject): BarStyle {
         if (mxObject && this.props.bootstrapStyleAttribute) {
             return mxObject.get(this.props.bootstrapStyleAttribute) as BarStyle;
         }
@@ -128,7 +128,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         return {
             maximumValue: this.getValue(this.props.maximumValueAttribute, this.defaultMaximumValue, mxObject),
             progressValue: this.getValue(this.props.progressAttribute, undefined, mxObject),
-            themeStyle: this.getStyle(mxObject)
+            themeStyle: this.getBarStyle (mxObject)
         };
     }
 
