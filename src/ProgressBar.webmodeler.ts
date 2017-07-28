@@ -13,7 +13,7 @@ export class preview extends Component<ProgressBarContainerProps, {}> {
         const bar = createElement(ProgressBar, this.transformProps(this.props));
         if (warnings) {
             return createElement("div", {},
-                createElement(Alert, { message: warnings }),
+                createElement(Alert, { bootstrapStyle: "danger", message: warnings }),
                 bar
             );
         }

@@ -53,7 +53,11 @@ class ProgressBar extends Component<ProgressBarProps, {}> {
                     this.getProgressText(maximumValue, progress)
                 )
             ),
-            createElement(Alert, { message: this.props.alertMessage })
+            createElement(Alert as any, {
+                bootstrapStyle: "danger",
+                className: "widget-progressbar",
+                message: this.props.alertMessage
+            })
         );
     }
 
