@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/mendixlabs/progress-bar.svg?branch=master)](https://travis-ci.org/mendixlabs/progress-bar)
+[![Dependency Status](https://david-dm.org/mendixlabs/progress-bar.svg)](https://david-dm.org/mendixlabs/progress-bar)
+[![Dev Dependency Status](https://david-dm.org/mendixlabs/progress-bar.svg#info=devDependencies)](https://david-dm.org/mendixlabs/progress-bar#info=devDependencies)
+[![codecov](https://codecov.io/gh/mendixlabs/progress-bar/branch/master/graph/badge.svg)](https://codecov.io/gh/mendixlabs/progress-bar)
+
 # Progress bar
 Displays a progress bar
 
