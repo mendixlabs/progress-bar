@@ -6,9 +6,7 @@ const merge = require("webpack-merge");
 const webpackConfigRelease = webpackConfig.map(config => merge(config, {
     devtool: false,
     mode: "production",
-    optimization: {
-        minimize: true
-    }
+    optimization: { minimize: true }
 }));
 
 module.exports = function(grunt) {

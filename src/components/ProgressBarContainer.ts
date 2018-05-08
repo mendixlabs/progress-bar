@@ -87,7 +87,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
             className: this.props.class,
             colorSwitch: this.props.textColorSwitch,
             maximumValue: this.state.maximumValue,
-            onClickAction: (this.props.onClickMicroflow || this.props.onClickNanoflow || this.props.onClickPage) && this.props.mxObject
+            onClickAction: this.props.onClickOption !== "doNothing" && this.props.mxObject
                 ? this.handleClick
                 : undefined,
             progress: this.state.progressValue,
