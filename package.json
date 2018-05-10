@@ -64,7 +64,7 @@
     "karma-remap-istanbul": "^0.6.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^3.0.0",
-    "mendix-client": "^7.13.2",
+    "mendix-client": "^7.13.3",
     "node-sass": "^4.9.0",
     "nodemon": "^1.17.3",
     "pre-commit": "^1.2.2",

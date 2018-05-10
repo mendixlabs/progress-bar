@@ -5,9 +5,12 @@ import { Alert } from "./components/Alert";
 
 declare function require(name: string): string;
 
+type VisibilityMap = {
+    [P in keyof ProgressBarContainerProps]: boolean;
+};
+
 // tslint:disable-next-line:class-name
 export class preview extends Component<ProgressBarContainerProps, {}> {
-
     render() {
         const warnings = ProgressBarContainer.validateProps(this.props);
         const bar = createElement(ProgressBar, this.transformProps(this.props));
@@ -37,10 +40,11 @@ export function getPreviewCss() {
     return require("./ui/ProgressBar.scss");
 }
 
-export function getVisibleProperties(valueMap: any, visibilityMap: any) {
+export function getVisibleProperties(valueMap: ProgressBarContainerProps, visibilityMap: VisibilityMap) {
     visibilityMap.onClickMicroflow = valueMap.onClickOption === "callMicroflow";
     visibilityMap.onClickNanoflow = valueMap.onClickOption === "callNanoflow";
     visibilityMap.onClickPage = valueMap.onClickOption === "showPage";
+    visibilityMap.openPageAs = valueMap.onClickOption === "showPage";
 
     return visibilityMap;
 }

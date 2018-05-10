@@ -20,6 +20,7 @@ export interface ProgressBarContainerProps extends WrapperProps {
     onClickPage?: string;
     progressAttribute: string;
     textColorSwitch: number;
+    openPageAs: PageLocation;
 }
 
 interface ProgressBarContainerState {
@@ -36,6 +37,7 @@ interface Nanoflow {
 }
 
 type OnClickOptions = "doNothing" | "showPage" | "callMicroflow" | "callNanoflow";
+type PageLocation = "content"| "popup" | "modal";
 
 export default class ProgressBarContainer extends Component<ProgressBarContainerProps, ProgressBarContainerState> {
     private subscriptionHandles: number[];
@@ -169,7 +171,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
     }
 
     private handleClick() {
-        const { mxform, mxObject, onClickMicroflow, onClickNanoflow, onClickOption, onClickPage } = this.props;
+        const { mxform, mxObject, onClickMicroflow, onClickNanoflow, onClickOption, onClickPage, openPageAs } = this.props;
         if (!mxObject || !mxObject.getGuid()) {
             return;
         }
@@ -193,8 +195,8 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
         } else if (onClickOption === "showPage" && onClickPage) {
             window.mx.ui.openForm(onClickPage, {
                 context,
-                error: error =>
-                    window.mx.ui.error(`Error while opening page ${onClickPage}: ${error.message}`)
+                error: error => window.mx.ui.error(`Error while opening page ${onClickPage}: ${error.message}`),
+                location: openPageAs
             });
         }
     }
