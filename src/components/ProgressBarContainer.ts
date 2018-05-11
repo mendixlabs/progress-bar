@@ -185,7 +185,7 @@ export default class ProgressBarContainer extends Component<ProgressBarContainer
                     window.mx.ui.error(`Error while executing microflow ${onClickMicroflow}: ${error.message}`),
                 origin: mxform
             });
-        } else if (onClickOption === "callNanoflow" && onClickNanoflow) {
+        } else if (onClickOption === "callNanoflow" && onClickNanoflow.nanoflow) {
             window.mx.data.callNanoflow({
                 context,
                 error: error => mx.ui.error(`An error occurred while executing the on click nanoflow: ${error.message}`),
